@@ -53,7 +53,7 @@ uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code) {
 
     char handle_string[16] = {0};
     uint32_t handle = script->next_handle++;
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     if (luaL_dostring(script->state, code->text) != LUA_OK) {
         printf("ERROR (loading): %s\n", lua_tostring(script->state, -1));
@@ -77,7 +77,7 @@ void Scripting_Call(gg_scripting_t* script, const char* func_name, uint32_t hand
     if (!Scripting_IsOk(script)) return;
 
     char handle_string[16] = {0};
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     lua_getglobal(script->state, handle_string);  // [table]
     lua_getfield(script->state, -1, func_name);   // [table] [function]
@@ -98,7 +98,7 @@ void Scripting_CallWithFloat(gg_scripting_t* script, const char* func_name, uint
     if (!Scripting_IsOk(script)) return;
 
     char handle_string[16] = {0};
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     lua_getglobal(script->state, handle_string);  // [table]
     lua_getfield(script->state, -1, func_name);   // [table] [function]
@@ -120,7 +120,7 @@ void Scripting_CallWithPointer(gg_scripting_t* script, const char* func_name, ui
     if (!Scripting_IsOk(script)) return;
 
     char handle_string[16] = {0};
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     lua_getglobal(script->state, handle_string);  // [table]
     lua_getfield(script->state, -1, func_name);   // [table] [function]
@@ -143,7 +143,7 @@ void Scripting_CallWithTwoPointers(gg_scripting_t* script, const char* func_name
     if (!Scripting_IsOk(script)) return;
 
     char handle_string[16] = {0};
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     lua_getglobal(script->state, handle_string);  // [table]
     lua_getfield(script->state, -1, func_name);   // [table] [function]
@@ -167,7 +167,7 @@ void Scripting_CallWithPointerBouquet(gg_scripting_t* script, const char* func_n
     if (!Scripting_IsOk(script)) return;
 
     char handle_string[16] = {0};
-    sprintf(handle_string, SCRIPTING_HANDLE_FORMAT, handle);
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     lua_getglobal(script->state, handle_string);  // [table]
     lua_getfield(script->state, -1, func_name);   // [table] [function]

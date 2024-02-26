@@ -18,26 +18,27 @@ void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg
     pair->name =(char*)calloc(256, sizeof(char));
     TextCopy(pair->name, name);
     pair->asset.type = type;
+    pair->next = NULL;
 
     // Load actual data
     char formatted_path[256] = {0};
     switch (type) {
         case ASSET_TEXTURE:
-            sprintf(formatted_path, "assets/%s.png", name);
+            sprintf_s(formatted_path, 256, "assets/%s.png", name);
             Texture_LoadFromFile(&pair->asset.data.as_tex, formatted_path);
             break;
         case ASSET_TILED_MAP:
-            sprintf(formatted_path, "assets/%s.tmj", name);
+            sprintf_s(formatted_path, 256, "assets/%s.tmj", name);
             TiledMap_LoadFromTMJ(&pair->asset.data.as_tiled_map, formatted_path);
             break;
         case ASSET_SCRIPT:
-            sprintf(formatted_path, "assets/%s.lua", name);
+            sprintf_s(formatted_path, 256, "assets/%s.lua", name);
             Script_LoadFromLua(&pair->asset.data.as_script, formatted_path);
             break;
         case ASSET_SCENE:
             // This asset is FANCY (read: painful) and needs the asset manager itself!!!
             // Yippee!!!
-            sprintf(formatted_path, "assets/%s.json", name);
+            sprintf_s(formatted_path, 256, "assets/%s.json", name);
             Scene_LoadFromJson(&pair->asset.data.as_scene, assets, window, state, formatted_path);
             break;
         default:

@@ -15,7 +15,7 @@ char* Log_TextFormat(const char* format, ...) {
 
     va_list args;
     va_start(args, format);
-    vsprintf(buffer, format, args);
+    vsprintf_s(buffer, 256, format, args);
     va_end(args);
 
     return buffer;

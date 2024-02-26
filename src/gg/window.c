@@ -82,7 +82,7 @@ void Window_DrawTexture(gg_window_t* window, gg_texture_t* texture, int32_t x, i
 }
 
 void Window_DrawTextureCentered(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y) {
-    DrawTexture(texture->_handle, x - Texture_GetWidth(texture) / 2.f, y - Texture_GetHeight(texture) / 2.f, WHITE);
+    DrawTexture(texture->_handle, x - Texture_GetWidth(texture) / 2, y - (int32_t)Texture_GetHeight(texture) / 2, WHITE);
 }
 
 void Window_DrawTextureCenteredSR(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y, float scale,

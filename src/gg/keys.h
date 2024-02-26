@@ -123,7 +123,7 @@ typedef enum {
 } gg_key_e;
 
 typedef struct gg_keys {
-
+    char _dummy;
 } gg_keys_t;
 
 void Keys_Create(gg_keys_t* keys);

@@ -54,9 +54,8 @@ void State_Tick(gg_state_t* state, gg_window_t* window) {
 void State_Draw(gg_state_t* state, gg_window_t* window) {
     Window_ClearScreen(window, COL(10, 20, 30));
 
-    igBegin("Test", true, NULL);
-
-    igEnd();
+    bool open;
+    igShowDemoWindow(&open);
 
     if (state->current_scene != NULL) {
         // Background Space Rendering

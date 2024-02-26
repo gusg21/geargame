@@ -14,7 +14,7 @@
 void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
     // Name
     scene->name = (char*)malloc(sizeof(char) * SCENE_DEFAULT_NAME_LEN);
-    sprintf(scene->name, "%s", SCENE_DEFAULT_NAME);
+    sprintf_s(scene->name, SCENE_DEFAULT_NAME_LEN, "%s", SCENE_DEFAULT_NAME);
 
     // Actors
     scene->actors = calloc(SCENE_MAX_ACTORS, sizeof(gg_actor_t));
@@ -58,7 +58,7 @@ void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
             free(scene->name);
         }
         scene->name = calloc(scene_name_len, sizeof(char));
-        sprintf(scene->name, "%s", scene_name);
+        sprintf_s(scene->name, scene_name_len, "%s", scene_name);
     }
 
     // Scene Map
@@ -138,8 +138,8 @@ void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_
         uint32_t id = Scene_GetNewAndActivate(scene, assets, window, script);
         gg_actor_t* actor = Scene_GetActorByID(scene, id);
 
-        actor->transform.pos.x = object->x;
-        actor->transform.pos.y = object->y;
+        actor->transform.pos.x = (float)object->x;
+        actor->transform.pos.y = (float)object->y;
 
         actor->name = malloc(sizeof(char) * 64);
         TextCopy(actor->name, object->name);

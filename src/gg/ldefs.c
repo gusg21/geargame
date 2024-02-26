@@ -91,7 +91,7 @@ static void LDefs_S_PushAssetValue(lua_State* L, gg_asset_t* asset, int asset_ty
 LDEF(Assets_GetAsset) {
     gg_assets_t* assets = (gg_assets_t*)lua_topointer(L, 1);
 
-    int type = lua_tointeger(L, 2);
+    int32_t type = (int32_t)lua_tointeger(L, 2);
     const char* name = (const char*)lua_tostring(L, 3);
 
     gg_asset_t* asset;
@@ -108,7 +108,7 @@ LDEF(Assets_GetAsset) {
 LDEF(Assets_Get) {
     gg_assets_t* assets = (gg_assets_t*)lua_topointer(L, 1);
 
-    int type = lua_tointeger(L, 2);
+    int32_t type = (int32_t)lua_tointeger(L, 2);
     const char* name = (const char*)lua_tostring(L, 3);
 
     if (assets != NULL) {
@@ -130,7 +130,7 @@ LDEF(Assets_Get) {
 // ASSET FUNCTIONS
 LDEF(Asset_GetValue) {
     gg_asset_t* asset = (gg_asset_t*)lua_topointer(L, 1);
-    int asset_type = lua_tointeger(L, 2);
+    int32_t asset_type = (int32_t)lua_tointeger(L, 2);
 
     LDefs_S_PushAssetValue(L, asset, asset_type);
 
@@ -141,12 +141,12 @@ LDEF(Asset_GetValue) {
 LDEF(Camera_SetPosition) {
     gg_camera_t* camera = (gg_camera_t*)lua_topointer(L, 1);
 
-    int32_t x = lua_tonumber(L, 2);
-    int32_t y = lua_tonumber(L, 3);
+    int32_t x = (int32_t)lua_tonumber(L, 2);
+    int32_t y = (int32_t)lua_tonumber(L, 3);
 
     if (camera != NULL) {
-        camera->x = x;
-        camera->y = y;
+        camera->x = (float)x;
+        camera->y = (float)y;
     } else {
         Log_Err("LUA: NULL camera to Camera_SetPosition");
     }
@@ -157,7 +157,7 @@ LDEF(Camera_SetPosition) {
 LDEF(Camera_SetZoom) {
     gg_camera_t* camera = (gg_camera_t*)lua_topointer(L, 1);
 
-    float zoom = lua_tonumber(L, 2);
+    float zoom = (float)lua_tonumber(L, 2);
 
     if (camera != NULL) {
         camera->zoom = zoom;
@@ -186,8 +186,8 @@ LDEF(Actor_GetPosition) {
 LDEF(Actor_SetPosition) {
     gg_actor_t* actor = (gg_actor_t*)lua_topointer(L, 1);
 
-    int32_t x = lua_tointeger(L, 2);
-    int32_t y = lua_tointeger(L, 3);
+    float x = (float)lua_tonumber(L, 2);
+    float y = (float)lua_tonumber(L, 3);
 
     actor->transform.pos.x = x;
     actor->transform.pos.y = y;
@@ -200,8 +200,8 @@ LDEF(TiledMap_Draw) {
     gg_tiled_map_t* map = (gg_tiled_map_t*)lua_topointer(L, 1);
     gg_window_t* window = (gg_window_t*)lua_topointer(L, 2);
 
-    int32_t x = lua_tointeger(L, 2);
-    int32_t y = lua_tointeger(L, 3);
+    int32_t x = (int32_t)lua_tointeger(L, 2);
+    int32_t y = (int32_t)lua_tointeger(L, 3);
 
     TiledMap_Draw(map, window, x, y);
 
@@ -212,10 +212,10 @@ LDEF(TiledMap_Draw) {
 LDEF(Window_DrawRectangle) {
     gg_window_t* window = (gg_window_t*)lua_topointer(L, 1);
 
-    int32_t x = lua_tointeger(L, 2);
-    int32_t y = lua_tointeger(L, 3);
-    uint32_t w = lua_tointeger(L, 4);
-    uint32_t h = lua_tointeger(L, 5);
+    int32_t x = (int32_t)lua_tointeger(L, 2);
+    int32_t y = (int32_t)lua_tointeger(L, 3);
+    uint32_t w = (uint32_t)lua_tointeger(L, 4);
+    uint32_t h = (uint32_t)lua_tointeger(L, 5);
 
     Window_DrawRectangle(window, x, y, w, h, COL(255, 128, 128));
 
@@ -226,8 +226,8 @@ LDEF(Window_DrawTexture) {
     gg_window_t* window = (gg_window_t*)lua_topointer(L, 1);
     gg_texture_t* tex = (gg_texture_t*)lua_topointer(L, 2);
 
-    float x = lua_tonumber(L, 3);
-    float y = lua_tonumber(L, 4);
+    int32_t x = (int32_t)lua_tonumber(L, 3);
+    int32_t y = (int32_t)lua_tonumber(L, 4);
 
     if (tex != NULL) {
         Window_DrawTexture(window, tex, x, y);
@@ -242,7 +242,7 @@ LDEF(Window_DrawTexture) {
 LDEF(Keys_KeyDown) {
     gg_keys_t* keys = (gg_keys_t*)lua_topointer(L, 1);
 
-    int key = lua_tointeger(L, 2);
+    int32_t key = (int32_t)lua_tointeger(L, 2);
 
     bool down = Keys_KeyDown(keys, key);
     lua_pushboolean(L, down);

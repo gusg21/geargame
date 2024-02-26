@@ -108,7 +108,7 @@ static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 
     // Set OS mouse position if requested (rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
     if (io->WantSetMousePos)
-        SetMousePosition(io->MousePos.x, io->MousePos.y);
+        SetMousePosition((int)io->MousePos.x, (int)io->MousePos.y);
     else
         io->MousePos = (ImVec2){-FLT_MAX, -FLT_MAX};
 
@@ -117,7 +117,7 @@ static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
     io->MouseDown[2] = IsMouseButtonDown(MOUSE_MIDDLE_BUTTON);
 
     if (!IsWindowMinimized()){
-        io->MousePos = (ImVec2){GetTouchX(), GetTouchY()};
+        io->MousePos = (ImVec2){(float)GetTouchX(), (float)GetTouchY()};
     }
 }
 
@@ -443,9 +443,11 @@ bool ImGui_ImplRaylib_ProcessEvent()
 
 void draw_triangle_vertex(ImDrawVert idx_vert)
 {
-    Color *c;
-    c = (Color *)&idx_vert.col;
-    rlColor4ub(c->r, c->g, c->b, c->a);
+    uint8_t r = idx_vert.col;
+    uint8_t g = idx_vert.col >> 8;
+    uint8_t b = idx_vert.col >> 16;
+    uint8_t a = idx_vert.col >> 24;
+    rlColor4ub(r, g, b, a);
     rlTexCoord2f(idx_vert.uv.x, idx_vert.uv.y);
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
@@ -458,6 +460,7 @@ void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx *idx_buffe
         rlPushMatrix();
         rlBegin(RL_TRIANGLES);
         rlEnableTexture(texture_id);
+        rlSetTexture(texture_id);
 
         ImDrawIdx index;
         ImDrawVert vertex;
@@ -486,7 +489,9 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData *draw_data)
         return;
     }
 
-    rlDisableBackfaceCulling();
+    // rlDisableBackfaceCulling();
+    rlSetBlendMode(RL_BLEND_ALPHA);
+    rlEnableColorBlend();
     for (int n = 0; n < draw_data->CmdListsCount; n++)
     {
         const ImDrawList *cmd_list = draw_data->CmdLists.Data[n];
@@ -510,18 +515,17 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData *draw_data)
                 {
                     if (pcmd->TextureId != NULL) {
                         unsigned int id = *(unsigned int*)pcmd->TextureId;
-                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, id);
+                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, g_FontTex.id);
                     } else {
-                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, 0);
+                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, g_FontTex.id);
                     }
                 }
-                EndScissorMode();
             }
             idx_buffer += pcmd->ElemCount;
         }
     }
     EndScissorMode();
-    rlEnableBackfaceCulling();
+    // rlEnableBackfaceCulling();
 }
 
 void ImGui_ImplRaylib_Render()

@@ -5,7 +5,7 @@
 
 void Texture_LoadFromName(gg_texture_t* texture, const char* name) {
     char formatted_path[256] = {0};  // TODO: fixed buffer size :3
-    sprintf(formatted_path, "assets/%s.png", name);
+    sprintf_s(formatted_path, 256, "assets/%s.png", name);
 
     Texture_LoadFromFile(texture, formatted_path);
 }

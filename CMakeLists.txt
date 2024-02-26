@@ -20,10 +20,19 @@ add_subdirectory(src/gg)
 target_link_libraries(${PROJECT_NAME} gglib)
 
 # Copy Assets
-add_custom_target(copy_assets 
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
-)
-add_dependencies(${PROJECT_NAME} copy_assets)
+if (APPLE)
+    add_custom_target(copy_assets 
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
+    )
+    add_dependencies(${PROJECT_NAME} copy_assets)
+endif()
+
+if (WIN32)
+    add_custom_target(copy_assets 
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/Debug/assets
+    )
+    add_dependencies(${PROJECT_NAME} copy_assets)
+endif()
 
 # Flags
 target_compile_definitions(${PROJECT_NAME} PUBLIC PROJECT_NAME=${PROJECT_NAME})
