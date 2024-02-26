@@ -8,7 +8,7 @@
 #include "tiled.h"
 
 void State_Init(gg_state_t* state) {
-#ifdef DEBUG
+#ifdef GG_DEBUG
     igCreateContext(NULL);
 
     ImGui_ImplRaylib_Init();
@@ -29,23 +29,23 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     }
 
     while (!Window_ShouldClose(window)) {
-#ifdef DEBUG
-        ImGui_ImplRaylib_ProcessEvent();
+#ifdef GG_DEBUG
         ImGui_ImplRaylib_NewFrame();
+        ImGui_ImplRaylib_ProcessEvent();
         igNewFrame();
 #endif
 
         State_Tick(state, window);
         
 
-#ifdef DEBUG
+#ifdef GG_DEBUG
         State_TickEditor(state, assets, window);
 #endif
 
         State_Draw(state, window);
 
-#ifdef DEBUG
-        igEndFrame();
+#ifdef GG_DEBUG
+        // igEndFrame();
 #endif
     }
 
@@ -90,11 +90,12 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         {
             Window_DrawDebugFPS(window);
 
-#ifdef DEBUG
+#ifdef GG_DEBUG
             ImGui_ImplRaylib_Render();
+            igUpdatePlatformWindows();
+            igRenderPlatformWindowsDefault(NULL, NULL);
 #endif
-            // igUpdatePlatformWindows();
-            // igRenderPlatformWindowsDefault(NULL, NULL);
+            
 
             Window_DrawSpaceOrigin(window);
         }

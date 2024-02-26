@@ -10,7 +10,6 @@
 #include "cimgui/imgui/imconfig.h"
 
 static double g_Time = 0.0;
-static int g_KeyMap[ImGuiKey_COUNT];
 static Texture2D g_FontTex;
 
 bool ImGui_ImplRaylib_Init();

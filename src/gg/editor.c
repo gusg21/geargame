@@ -1,4 +1,4 @@
-#ifdef DEBUG
+#ifdef GG_DEBUG
 
 #include "editor.h"
 #include "assets.h"
@@ -27,9 +27,12 @@ static void Editor_S_Header(gg_editor_t* editor, ImVec4 color, const char* text)
 }
 
 static void Editor_S_DoStateViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
+    ImGuiIO* io = igGetIO();
     igBegin("State Viewer", &editor->is_editor_open, 0);
     {
+        igIsItemClicked(ImGuiMouseButton_Left);
         Editor_S_Header(editor, (ImVec4){235 / 255.f, 85 / 255.f, 52 / 255.f, 255 / 255.f}, "State Viewer");
+        igText("FPS %.2f (ft %.2f)", 1.f / Window_GetDeltaTime(window), Window_GetDeltaTime(window));
         TextEditor_render(&editor->text);
     }
     igEnd();
@@ -94,4 +97,4 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     igShowDemoWindow(&yeah);
 }
 
-#endif  // DEBUG
+#endif  // GG_DEBUG
