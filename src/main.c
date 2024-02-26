@@ -30,7 +30,7 @@ int main() {
     }
 
     // Loop
-    State_DoLoop(&state, &window);
+    State_DoLoop(&state, &assets, &window);
 
     return 0;
 }

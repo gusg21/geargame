@@ -1,4 +1,4 @@
-#include "external/cimgui_impl_raylib.h"
+#include "cimgui_impl_raylib.h"
 
 #include "state.h"
 #include "assets.h"
@@ -19,7 +19,7 @@ void State_Init(gg_state_t* state) {
 
 void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { state->current_scene = scene; }
 
-void State_DoLoop(gg_state_t* state, gg_window_t* window) {
+void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     if (state->current_scene != NULL) {
         Scene_Ready(state->current_scene);
     }
@@ -31,6 +31,7 @@ void State_DoLoop(gg_state_t* state, gg_window_t* window) {
         igNewFrame();
 
         State_Tick(state, window);
+        State_TickEditor(state, assets, window);
         State_Draw(state, window);
 
         igEndFrame();
@@ -51,11 +52,12 @@ void State_Tick(gg_state_t* state, gg_window_t* window) {
     }
 }
 
+void State_TickEditor(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
+    Editor_Update(&state->editor, state, assets, window);
+}
+
 void State_Draw(gg_state_t* state, gg_window_t* window) {
     Window_ClearScreen(window, COL(10, 20, 30));
-
-    bool open;
-    igShowDemoWindow(&open);
 
     if (state->current_scene != NULL) {
         // Background Space Rendering
@@ -81,8 +83,6 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
             // igRenderPlatformWindowsDefault(NULL, NULL);
 
             Window_DrawSpaceOrigin(window);
-
-            DrawTexture(g_FontTex, 0, 0, WHITE);
         }
         Window_EndDrawing(window);
     }

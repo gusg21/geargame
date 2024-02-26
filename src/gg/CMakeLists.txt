@@ -3,6 +3,8 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 set(SOURCE_FILES actor.c
     assets.c
     camera.c
+    cimgui_impl_raylib.c
+    editor.c
     grid.c
     keys.c
     ldefs.c
