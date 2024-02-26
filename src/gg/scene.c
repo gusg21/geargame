@@ -10,6 +10,7 @@
 #include "log.h"
 #include "state.h"
 #include "tiled.h"
+#include "utils.h"
 
 void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
     // Name

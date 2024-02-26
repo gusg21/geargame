@@ -3341,6 +3341,13 @@ typedef ImVector<float> ImVector_float;
 typedef ImVector<int> ImVector_int;
 typedef ImVector<unsigned char> ImVector_unsigned_char;
 #endif //CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+
+typedef struct ImTextEditor {
+    void* edit;
+} ImTextEditor;
+CIMGUI_API void TextEditor_create(ImTextEditor* ied);
+CIMGUI_API void TextEditor_render(ImTextEditor* ied);
+
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void);
 CIMGUI_API void ImVec2_destroy(ImVec2* self);
 CIMGUI_API ImVec2* ImVec2_ImVec2_Float(float _x,float _y);

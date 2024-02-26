@@ -1,6 +1,8 @@
 #if !defined(GG_EDITOR_H)
 #define GG_EDITOR_H
 
+#include "cimgui_impl_raylib.h"
+
 #include <stdbool.h>
 
 typedef struct gg_state gg_state_t;
@@ -8,6 +10,8 @@ typedef struct gg_assets gg_assets_t;
 typedef struct gg_window gg_window_t;
 
 typedef struct gg_editor {
+    ImTextEditor text;
+
     bool is_editor_open;
     bool is_asset_list_open;
 } gg_editor_t;

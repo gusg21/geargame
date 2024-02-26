@@ -239,6 +239,7 @@ void ImGui_ImplRaylib_NewFrame() {
 #define SET_KEY_DOWN(IM_KEY, RL_KEY) io->KeysData[IM_KEY - ImGuiKey_NamedKey_BEGIN].Down = IsKeyDown(RL_KEY)
 
 bool ImGui_ImplRaylib_ProcessEvent() {
+
     struct ImGuiIO* io = igGetIO();
 
     FOR_ALL_KEYS(SET_KEY_DOWN);
@@ -258,7 +259,7 @@ void draw_triangle_vertex(ImDrawVert idx_vert) {
     uint8_t a = idx_vert.col >> 24;
     rlColor4ub(r, g, b, a);
     rlTexCoord2f(idx_vert.uv.x, idx_vert.uv.y);
-    rlVertex2f(roundf(idx_vert.pos.x), roundf(idx_vert.pos.y));
+    rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
 
 void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx* idx_buffer, const ImDrawVert* idx_vert,
@@ -317,7 +318,7 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
                 {
                     if (pcmd->TextureId != NULL) {
                         unsigned int id = *(unsigned int*)pcmd->TextureId;
-                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, g_FontTex.id);
+                        raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, id);
                     } else {
                         raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, g_FontTex.id);
                     }

@@ -1,5 +1,7 @@
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
+set(CMAKE_C_STANDARD 11)
+
 set(SOURCE_FILES actor.c
     assets.c
     camera.c

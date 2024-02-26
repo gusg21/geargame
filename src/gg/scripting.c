@@ -2,11 +2,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ldefs.h"
 #include "log.h"
 #include "lua54/lauxlib.h"
 #include "lua54/lualib.h"
+
+#include "utils.h"
 
 void Script_LoadFromLua(gg_script_t* code, const char* path) {
     code->text = (char*)calloc(sizeof(char), SCRIPT_MAX_LENGTH);

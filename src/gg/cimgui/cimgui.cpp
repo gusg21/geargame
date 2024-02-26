@@ -18,7 +18,19 @@
 #include "./imgui/imgui_internal.h"
 #include "cimgui.h"
 
+#include "imgui/TextEditor.h"
 
+CIMGUI_API void TextEditor_create(ImTextEditor* ied) {
+    TextEditor* ted = new TextEditor();
+    ted->SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+    ted->SetText("function a(b)\n\tb.blow_up()\nend");
+
+    ied->edit = ted;
+}
+
+CIMGUI_API void TextEditor_render(ImTextEditor* ied) {
+    ((TextEditor*)ied->edit)->Render("Title");
+}
 
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void)
 {

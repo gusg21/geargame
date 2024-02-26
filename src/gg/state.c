@@ -1,17 +1,21 @@
 #include "cimgui_impl_raylib.h"
 
-#include "state.h"
 #include "assets.h"
 #include "color.h"
 #include "log.h"
 #include "scene.h"
+#include "state.h"
 #include "tiled.h"
 
 void State_Init(gg_state_t* state) {
+#ifdef DEBUG
     igCreateContext(NULL);
 
     ImGui_ImplRaylib_Init();
     igStyleColorsClassic(NULL);
+
+    Editor_Create(&state->editor);
+#endif
 
     Keys_Create(&state->keys);
     state->current_scene = NULL;
@@ -25,16 +29,23 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     }
 
     while (!Window_ShouldClose(window)) {
+#ifdef DEBUG
         ImGui_ImplRaylib_ProcessEvent();
-
         ImGui_ImplRaylib_NewFrame();
         igNewFrame();
+#endif
 
         State_Tick(state, window);
+
+#ifdef DEBUG
         State_TickEditor(state, assets, window);
+#endif
+
         State_Draw(state, window);
 
+#ifdef DEBUG
         igEndFrame();
+#endif
     }
 
     State_Destroy(state);
@@ -78,20 +89,18 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         {
             Window_DrawDebugFPS(window);
 
+#ifdef DEBUG
             ImGui_ImplRaylib_Render();
+#endif
             // igUpdatePlatformWindows();
             // igRenderPlatformWindowsDefault(NULL, NULL);
 
             Window_DrawSpaceOrigin(window);
         }
         Window_EndDrawing(window);
-    }
-    else
-    {
+    } else {
         Window_BeginDrawing(window);
-        {
-            Window_DrawRectangle(window, 0, 0, Window_GetWidth(window), Window_GetHeight(window), COL(220, 200, 10));
-        }
+        { Window_DrawRectangle(window, 0, 0, Window_GetWidth(window), Window_GetHeight(window), COL(220, 200, 10)); }
         Window_EndDrawing(window);
     }
 }
