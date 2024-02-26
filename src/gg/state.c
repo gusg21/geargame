@@ -12,7 +12,7 @@ void State_Init(gg_state_t* state) {
     igCreateContext(NULL);
 
     ImGui_ImplRaylib_Init();
-    igStyleColorsClassic(NULL);
+    igStyleColorsDark(NULL);
 
     Editor_Create(&state->editor);
 #endif
@@ -36,6 +36,7 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 #endif
 
         State_Tick(state, window);
+        
 
 #ifdef DEBUG
         State_TickEditor(state, assets, window);
