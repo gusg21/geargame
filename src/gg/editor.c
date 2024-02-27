@@ -33,6 +33,8 @@ static void Editor_S_DoStateViewer(gg_editor_t* editor, gg_state_t* state, gg_as
         igIsItemClicked(ImGuiMouseButton_Left);
         Editor_S_Header(editor, (ImVec4){235 / 255.f, 85 / 255.f, 52 / 255.f, 255 / 255.f}, "State Viewer");
         igText("FPS %.2f (ft %.2f)", 1.f / Window_GetDeltaTime(window), Window_GetDeltaTime(window));
+        igText("shift [%d] alt [%d] ctrl [%d] super [%d]", io->KeyShift, io->KeyAlt, io->KeyCtrl, io->KeySuper);
+        
         TextEditor_render(&editor->text);
     }
     igEnd();
@@ -77,7 +79,7 @@ static void Editor_S_DoAssetsViewer(gg_editor_t* editor, gg_state_t* state, gg_a
         while (pair != NULL) {
             const char* type_name = Assets_GetTypeName(pair->asset.type);
 
-            if (igTreeNode_StrStr(type_name, "%s (%s)", pair->name, type_name)) {
+            if (igTreeNode_StrStr(pair->name, "%s (%s)", pair->name, type_name)) {
                 Editor_S_AssetPairInfo(pair);
 
                 igTreePop();

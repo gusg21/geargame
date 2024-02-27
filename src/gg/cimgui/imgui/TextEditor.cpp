@@ -699,6 +699,9 @@ void TextEditor::HandleKeyboardInputs()
 {
 	ImGuiIO& io = ImGui::GetIO();
 	auto shift = io.KeyShift;
+	if (shift) {
+		int blah;
+	}
 	auto ctrl = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
 	auto alt = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
 
@@ -799,7 +802,7 @@ void TextEditor::HandleMouseInputs()
 			{
 				if (!ctrl)
 				{
-					mState.mCursorPosition = mInteractiveStart = mInteractiveEnd = ScreenPosToCoordinates(ImGui::GetMousePos());
+					mState.mCursorPosition = mInteractiveStart = mInteractiveEnd = ScreenPosToCoordinates(ImGui::GetMousePos());	
 					mSelectionMode = SelectionMode::Line;
 					SetSelection(mInteractiveStart, mInteractiveEnd, mSelectionMode);
 				}
@@ -1132,7 +1135,7 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 	if (mHandleKeyboardInputs)
 	{
 		HandleKeyboardInputs();
-		ImGui::PushAllowKeyboardFocus(true);
+		// ImGui::PushAllowKeyboardFocus(true);
 	}
 
 	if (mHandleMouseInputs)
@@ -1141,8 +1144,8 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 	ColorizeInternal();
 	Render();
 
-	if (mHandleKeyboardInputs)
-		ImGui::PopAllowKeyboardFocus();
+	// if (mHandleKeyboardInputs)
+	// 	ImGui::PopAllowKeyboardFocus();
 
 	if (!mIgnoreImGuiChild)
 		ImGui::EndChild();

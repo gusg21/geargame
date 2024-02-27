@@ -69,9 +69,9 @@ static void ImGui_ImplRaylib_UpdateMousePosAndButtons() {
     else
         io->MousePos = (ImVec2){-FLT_MAX, -FLT_MAX};
 
-    // io->MouseDown[0] = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
-    // io->MouseDown[1] = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
-    // io->MouseDown[2] = IsMouseButtonDown(MOUSE_BUTTON_MIDDLE);
+    io->MouseDown[0] = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+    io->MouseDown[1] = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
+    io->MouseDown[2] = IsMouseButtonDown(MOUSE_BUTTON_MIDDLE);
 
     MOUSE_EVENT(io, ImGuiMouseButton_Left, MOUSE_BUTTON_LEFT);
     MOUSE_EVENT(io, ImGuiMouseButton_Right, MOUSE_BUTTON_RIGHT);
@@ -247,18 +247,43 @@ bool ImGui_ImplRaylib_ProcessEvent() {
 
     FOR_ALL_KEYS(SET_KEY_DOWN);
 
-    int keyPressed = GetKeyPressed();
+    int keyPressed = GetCharPressed();
     while (keyPressed > 0) {
-        if (keyPressed >= KEY_SPACE && keyPressed < KEY_ESCAPE)
-            ImGuiIO_AddInputCharacter(io, keyPressed);
-        
-        keyPressed = GetKeyPressed();
+        // if (keyPressed >= KEY_A && keyPressed <= KEY_Z) {
+        //     keyPressed += 26;
+        // }
+        ImGuiIO_AddInputCharacter(io, keyPressed);
+
+        keyPressed = GetCharPressed();
     }
 
-    bool shiftDown = IsKeyPressed(KEY_RIGHT_SHIFT) || IsKeyPressed(KEY_LEFT_SHIFT);
-    if (shiftDown != wasShiftDown)
+    bool shiftDown = IsKeyDown(KEY_RIGHT_SHIFT) || IsKeyDown(KEY_LEFT_SHIFT);
+    if (shiftDown != wasShiftDown) {
         ImGuiIO_AddKeyEvent(io, ImGuiMod_Shift, shiftDown);
+    }
+    io->KeyShift = shiftDown;
     wasShiftDown = shiftDown;
+
+    bool altDown = IsKeyDown(KEY_RIGHT_ALT) || IsKeyDown(KEY_LEFT_ALT);
+    if (altDown != wasAltDown) {
+        ImGuiIO_AddKeyEvent(io, ImGuiMod_Alt, altDown);
+    }
+    io->KeyShift = altDown;
+    wasAltDown = altDown;
+
+    bool ctrlDown = IsKeyDown(KEY_RIGHT_CONTROL) || IsKeyDown(KEY_LEFT_CONTROL);
+    if (ctrlDown != wasCtrlDown) {
+        ImGuiIO_AddKeyEvent(io, ImGuiMod_Ctrl, ctrlDown);
+    }
+    io->KeyShift = ctrlDown;
+    wasCtrlDown = ctrlDown;
+
+    bool superDown = IsKeyDown(KEY_RIGHT_SUPER) || IsKeyDown(KEY_LEFT_SUPER);
+    if (superDown != wasSuperDown) {
+        ImGuiIO_AddKeyEvent(io, ImGuiMod_Super, superDown);
+    }
+    io->KeyShift = superDown;
+    wasSuperDown = superDown;
 
     // bool altDown = IsKeyPressed(KEY_RIGHT_ALT) || IsKeyPressed(KEY_LEFT_ALT);
     // if (shiftDown != wasShiftDown)

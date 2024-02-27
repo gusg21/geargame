@@ -30,8 +30,11 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 
     while (!Window_ShouldClose(window)) {
 #ifdef GG_DEBUG
-        ImGui_ImplRaylib_NewFrame();
+        ImGuiIO* io = igGetIO();
+
         ImGui_ImplRaylib_ProcessEvent();
+
+        ImGui_ImplRaylib_NewFrame();
         igNewFrame();
 #endif
 
