@@ -128,6 +128,19 @@ const char* Assets_GetTypeName(gg_asset_type_e type) {
     return "??";
 }
 
+void Assets_FindAssetsByType(gg_assets_t* assets, char** string_list, gg_asset_type_e type) {
+    gg_asset_pair_t* pair = assets->asset_list;
+    size_t i = 0;
+    while (pair != NULL) {
+        if (pair->asset.type == type) {
+            string_list[i] = pair->name;
+            i++;
+        }
+
+        pair = pair->next;
+    }
+}
+
 void Assets_Destroy(gg_assets_t* assets) {
     // TODO: Cleanup
 }

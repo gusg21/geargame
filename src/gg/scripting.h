@@ -30,6 +30,7 @@ void Script_LoadFromLua(gg_script_t* code, const char* path);
 
 void Scripting_Initialize(gg_scripting_t* script, bool use_auto_gc);
 uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code);
+uint32_t Scripting_ReloadScript(gg_scripting_t* script, gg_script_t* code, uint32_t handle);
 bool Scripting_IsOk(gg_scripting_t* script);
 void Scripting_DoGarbageCollection(gg_scripting_t* script);
 // TODO: Get object handle

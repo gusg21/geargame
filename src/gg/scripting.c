@@ -44,6 +44,11 @@ void Scripting_Initialize(gg_scripting_t* script, bool use_auto_gc) {
 }
 
 uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code) {
+    uint32_t handle = script->next_handle++;
+    return Scripting_ReloadScript(script, code, handle);
+}
+
+uint32_t Scripting_ReloadScript(gg_scripting_t* script, gg_script_t* code, uint32_t handle) {
     // printf("Loading script %s\n", data);
     if (code == NULL) {
         printf("ERROR (loading): no code!\n");
@@ -55,7 +60,6 @@ uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code) {
     }
 
     char handle_string[16] = {0};
-    uint32_t handle = script->next_handle++;
     sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     if (luaL_dostring(script->state, code->text) != LUA_OK) {

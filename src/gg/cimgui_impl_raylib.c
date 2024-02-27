@@ -51,6 +51,38 @@ static void ImGui_ImplRaylib_UpdateMouseCursor() {
         // Show OS mouse cursor
         ShowCursor();
     }
+
+    switch (imgui_cursor) {
+        case ImGuiMouseCursor_Arrow:
+            SetMouseCursor(MOUSE_CURSOR_ARROW);
+            break;
+        case ImGuiMouseCursor_TextInput:
+            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            break;
+        case ImGuiMouseCursor_Hand:
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            break;
+        case ImGuiMouseCursor_NotAllowed:
+            SetMouseCursor(MOUSE_CURSOR_NOT_ALLOWED);
+            break;
+        case ImGuiMouseCursor_ResizeAll:
+            SetMouseCursor(MOUSE_CURSOR_RESIZE_ALL);
+            break;
+        case ImGuiMouseCursor_ResizeEW:
+            SetMouseCursor(MOUSE_CURSOR_RESIZE_EW);
+            break;
+        case ImGuiMouseCursor_ResizeNESW:
+            SetMouseCursor(MOUSE_CURSOR_RESIZE_NESW);
+            break;
+        case ImGuiMouseCursor_ResizeNS:
+            SetMouseCursor(MOUSE_CURSOR_RESIZE_NS);
+            break;
+        case ImGuiMouseCursor_ResizeNWSE:
+            SetMouseCursor(MOUSE_CURSOR_RESIZE_NWSE);
+            break;
+        default:
+            break;
+    }
 }
 
 #define MOUSE_EVENT(IO, IM_MOUSE, RL_MOUSE)              \

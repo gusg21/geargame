@@ -19,6 +19,8 @@ void State_Init(gg_state_t* state) {
 
     Keys_Create(&state->keys);
     state->current_scene = NULL;
+
+    state->wants_exit = false;
 }
 
 void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { state->current_scene = scene; }
@@ -47,9 +49,8 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 
         State_Draw(state, window);
 
-#ifdef GG_DEBUG
-        // igEndFrame();
-#endif
+        if (state->wants_exit)
+            break;
     }
 
     State_Destroy(state);
@@ -108,6 +109,10 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         { Window_DrawRectangle(window, 0, 0, Window_GetWidth(window), Window_GetHeight(window), COL(220, 200, 10)); }
         Window_EndDrawing(window);
     }
+}
+
+void State_Quit(gg_state_t* state) {
+    state->wants_exit = true;
 }
 
 void State_Destroy(gg_state_t* state) {}

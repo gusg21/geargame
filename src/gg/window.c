@@ -15,6 +15,8 @@ void Window_CreateWindowed(gg_window_t* window, const char* title, uint32_t widt
     window->initialized = IsWindowReady();
     window->fullscreen = false;  // TODO: Ensure that the window is windowed?
 
+    SetExitKey(KEY_NULL);
+
     SetTargetFPS(10000);
 }
 

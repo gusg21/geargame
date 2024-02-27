@@ -19,11 +19,11 @@
 #include "cimgui.h"
 
 #include "imgui/TextEditor.h"
+#include <string.h>
 
 CIMGUI_API void TextEditor_create(ImTextEditor* ied) {
     TextEditor* ted = new TextEditor();
     ted->SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
-    ted->SetText("function a(b)\n\tb.blow_up()\nend");
 
     ied->edit = ted;
 }
@@ -31,6 +31,23 @@ CIMGUI_API void TextEditor_create(ImTextEditor* ied) {
 CIMGUI_API void TextEditor_render(ImTextEditor* ied) {
     ((TextEditor*)ied->edit)->Render("Title");
 }
+
+CIMGUI_API void TextEditor_setText(ImTextEditor* ied, const char* text) {
+    std::string str_text(text);
+    ((TextEditor*)ied->edit)->SetText(str_text);
+}
+
+CIMGUI_API size_t TextEditor_getTextLength(ImTextEditor* ied) {
+    return ((TextEditor*)ied->edit)->GetText().size();
+}
+
+CIMGUI_API char* TextEditor_getText(ImTextEditor* ied) {
+    size_t text_length = TextEditor_getTextLength(ied);
+    void* text = malloc(text_length * sizeof(char));
+    memcpy(text, ((TextEditor*)ied->edit)->GetText().c_str(), text_length);
+    return (char*)text;
+}
+
 
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void)
 {
@@ -484,6 +501,10 @@ CIMGUI_API void igSameLine(float offset_from_start_x,float spacing)
 {
     return ImGui::SameLine(offset_from_start_x,spacing);
 }
+CIMGUI_API void igSameLine2()
+{
+    return ImGui::SameLine();
+}
 CIMGUI_API void igNewLine()
 {
     return ImGui::NewLine();
@@ -641,6 +662,10 @@ CIMGUI_API void igSeparatorText(const char* label)
 CIMGUI_API bool igButton(const char* label,const ImVec2 size)
 {
     return ImGui::Button(label,size);
+}
+CIMGUI_API bool igButton2(const char* label)
+{
+    return ImGui::Button(label);
 }
 CIMGUI_API bool igSmallButton(const char* label)
 {
@@ -974,6 +999,10 @@ CIMGUI_API bool igCollapsingHeader_BoolPtr(const char* label,bool* p_visible,ImG
 {
     return ImGui::CollapsingHeader(label,p_visible,flags);
 }
+CIMGUI_API bool igCollapsingHeader_Str(const char* label)
+{
+    return ImGui::CollapsingHeader(label);
+}
 CIMGUI_API void igSetNextItemOpen(bool is_open,ImGuiCond cond)
 {
     return ImGui::SetNextItemOpen(is_open,cond);
@@ -989,6 +1018,10 @@ CIMGUI_API bool igSelectable_BoolPtr(const char* label,bool* p_selected,ImGuiSel
 CIMGUI_API bool igBeginListBox(const char* label,const ImVec2 size)
 {
     return ImGui::BeginListBox(label,size);
+}
+CIMGUI_API bool igBeginListBox2(const char* label)
+{
+    return ImGui::BeginListBox(label);
 }
 CIMGUI_API void igEndListBox()
 {
