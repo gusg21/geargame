@@ -1395,8 +1395,8 @@ void ImDrawList::AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float th
 {
     if ((col & IM_COL32_A_MASK) == 0)
         return;
-    PathLineTo(p1 + ImVec2(0.5f, 0.5f));
-    PathLineTo(p2 + ImVec2(0.5f, 0.5f));
+    PathLineTo(p1);
+    PathLineTo(p2);
     PathStroke(col, 0, thickness);
 }
 

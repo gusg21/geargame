@@ -2,7 +2,7 @@
 #define GG_UTILS_H
 
 #ifdef APPLE
-#define sprintf_s(a, b, c, d) sprintf(a, c, d)
+#define sprintf_s(a, b, c, ...) snprintf(a, b, c, __VA_ARGS__)
 #define vsprintf_s(a, b, c, d) vsprintf(a, c, d)
 #endif
 

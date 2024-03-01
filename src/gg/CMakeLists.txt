@@ -4,6 +4,8 @@ set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_FILES
 
+    editor/asseteditor.c
+    editor/codeeditor.c
     editor/editor.c
 
     actor.c

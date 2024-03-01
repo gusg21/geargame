@@ -7,6 +7,9 @@
 
 #include <stdbool.h>
 
+#include "asseteditor.h"
+#include "codeeditor.h"
+
 typedef struct gg_state gg_state_t;
 typedef struct gg_assets gg_assets_t;
 typedef struct gg_window gg_window_t;
@@ -15,20 +18,18 @@ typedef struct gg_asset_pair gg_asset_pair_t;
 #define EDITOR_LUA_CONSOLE_LINES 30
 #define EDITOR_LUA_MAX_LINE_LENGTH 256
 #define EDITOR_LUA_INPUT_LINE_LENGTH 128
-#define EDITOR_NEW_ASSET_NAME_LENGTH 64
 
 typedef struct gg_editor {
     bool is_code_editor_open;
     bool is_code_editor_visible;
-    ImTextEditor text_editor;
-    gg_asset_pair_t* text_editor_pair;
+    gg_code_editor_t code_editor;
 
     bool is_scene_viewer_open;
     bool is_scene_viewer_visible;
 
     bool is_assets_viewer_open;
     bool is_assets_viewer_visible;
-    char new_asset_name[EDITOR_NEW_ASSET_NAME_LENGTH];
+    gg_asset_editor_t asset_editor;
 
     bool is_demo_window_open;
     bool is_demo_window_visible;
