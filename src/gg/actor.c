@@ -58,3 +58,10 @@ void Actor_CallScriptFunctionWithPointerBouquet(gg_actor_t* actor, gg_scripting_
         Scripting_CallWithPointerBouquet(scripting, func_name, actor->script_handle, actor, state, window, assets);
     }
 }
+
+void Actor_SetPointerBouquet(gg_actor_t* actor, gg_scripting_t* scripting, gg_state_t* state, gg_window_t* window,
+                             gg_assets_t* assets) {
+    if (actor->script_handle != SCRIPTING_BAD_HANDLE) {
+        Scripting_SetPointerBouquet(scripting, actor->script_handle, actor, state, window, assets);
+    }
+}

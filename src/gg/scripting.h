@@ -44,4 +44,6 @@ void Scripting_CallWithTwoPointers(gg_scripting_t* script, const char* func_name
                                    void* pointer2);
 void Scripting_CallWithPointerBouquet(gg_scripting_t* script, const char* func_name, uint32_t handle, gg_actor_t* actor,
                                       gg_state_t* state, gg_window_t* window, gg_assets_t* assets);
+void Scripting_SetPointerBouquet(gg_scripting_t* script, uint32_t handle, gg_actor_t* actor, gg_state_t* state,
+                                 gg_window_t* window, gg_assets_t* assets);
 #endif  // GG_SCRIPTING_H

@@ -27,7 +27,7 @@ void ActorSpec_LoadFromJSON(gg_actor_spec_t* spec, const char* path) {
 
     if (json_object_dothas_value_of_type(root_object, "name", JSONString)) {
         const char* name = json_object_get_string(root_object, "name");
-        memcpy(spec->name, name, ACTOR_SPEC_MAX_NAME_LEN - 1);
+        memcpy(spec->name, name, ACTOR_MAX_NAME_LEN - 1);
     }
 
     if (json_object_dothas_value_of_type(root_object, "position", JSONObject)) {

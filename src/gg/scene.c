@@ -93,9 +93,9 @@ uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
 
             if (script != NULL) {
                 actor->script_handle = Scripting_LoadScript(&scene->scripting, script);
-                // TODO: Set these as predefined globals for the script
-                Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state, window,
-                                                           assets);
+                // Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state, window,
+                //                                            assets);
+                Actor_SetPointerBouquet(actor, &scene->scripting, scene->state, window, assets);
             }
 
             return actor_id;
@@ -107,7 +107,8 @@ uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
 
 uint32_t Scene_NewActorFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window,
                                     gg_actor_spec_t* spec) {
-    gg_script_t* script;
+    // Load the script specified in the spec
+    gg_script_t* script = NULL;
     gg_asset_t* script_asset;
     bool valid = Assets_Get(assets, &script_asset, spec->script_asset_name);
     if (valid) {
@@ -119,6 +120,10 @@ uint32_t Scene_NewActorFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_windo
     // Create the actor
     uint32_t new_actor_id = Scene_NewActor(scene, assets, window, script);
     gg_actor_t* new_actor = Scene_GetActorByID(scene, new_actor_id);
+
+    // Set up actor
+    memcpy(new_actor->name, spec->name, ACTOR_MAX_NAME_LEN);
+    new_actor->transform.pos = (gg_v2_t){spec->initial_pos.x, spec->initial_pos.y};
 
     return new_actor_id;
 }

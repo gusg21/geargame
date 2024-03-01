@@ -95,8 +95,7 @@ static void Editor_S_Actor(gg_editor_t* editor, gg_actor_t* actor, uint32_t acto
                 bool valid = Assets_Get(assets, &asset, script_names[i]);
                 if (valid) {
                     Scripting_ReloadScript(script, &asset->data.as_script, actor->script_handle);
-                    Scripting_CallWithPointerBouquet(script, "initialize", actor->script_handle, actor, state, window,
-                                                     assets);
+                    Scripting_SetPointerBouquet(script, actor->script_handle, actor, state, window, assets);
                     Scripting_Call(script, "ready", actor->script_handle);
                 }
             }
@@ -111,10 +110,6 @@ static void Editor_S_Actor(gg_editor_t* editor, gg_actor_t* actor, uint32_t acto
         char handle_str[16] = {0};
         Scripting_GetHandleString(script, handle_str, 15, actor->script_handle);
         SetClipboardText(handle_str);
-    }
-
-    if (igButton2("Initialize")) {
-        Scripting_CallWithPointerBouquet(script, "initialize", actor->script_handle, actor, state, window, assets);
     }
     igSameLine2();
     if (igButton2("Ready")) {

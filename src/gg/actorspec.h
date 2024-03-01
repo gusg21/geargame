@@ -4,11 +4,12 @@
 #include "vector.h"
 
 #define ACTOR_SPEC_MAX_ASSET_NAME_LEN 64
-#define ACTOR_SPEC_MAX_NAME_LEN 32
+// NOTE: Re-defined from actor.h
+#define ACTOR_MAX_NAME_LEN 32
 
 // Everything you need to construct a new actor
 typedef struct gg_actor_spec {
-    char name[ACTOR_SPEC_MAX_NAME_LEN];
+    char name[ACTOR_MAX_NAME_LEN];
     gg_v2_t initial_pos;
     char script_asset_name[ACTOR_SPEC_MAX_ASSET_NAME_LEN];
 } gg_actor_spec_t;

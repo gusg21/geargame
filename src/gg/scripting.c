@@ -91,9 +91,7 @@ int32_t Scripting_RunCode(gg_scripting_t* script, const char* code) {
     return error;
 }
 
-const char* Scripting_GetError(gg_scripting_t* script) { 
-    return lua_tostring(script->state, -1);
- }
+const char* Scripting_GetError(gg_scripting_t* script) { return lua_tostring(script->state, -1); }
 
 void Scripting_Call(gg_scripting_t* script, const char* func_name, uint32_t handle) {
     if (!Scripting_IsOk(script)) return;
@@ -207,5 +205,32 @@ void Scripting_CallWithPointerBouquet(gg_scripting_t* script, const char* func_n
     } else {
         // printf("nil func_name %s\n", func_name);
     }
+    lua_settop(script->state, 0);  // Empty the stack
+}
+
+void Scripting_SetPointerBouquet(gg_scripting_t* script, uint32_t handle, gg_actor_t* actor, gg_state_t* state,
+                                 gg_window_t* window, gg_assets_t* assets) {
+    if (!Scripting_IsOk(script)) return;
+
+    char handle_string[16] = {0};
+    sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
+
+    lua_getglobal(script->state, handle_string);  // [table]
+
+    lua_pushlightuserdata(script->state, actor);   // [table] [ptr]
+    lua_setfield(script->state, -2, "actor");      // [table]
+    lua_pushlightuserdata(script->state, state);   // [table] [ptr]
+    lua_setfield(script->state, -2, "state");      // [table]
+    lua_pushlightuserdata(script->state, window);  // [table] [ptr]
+    lua_setfield(script->state, -2, "window");     // [table]
+    lua_pushlightuserdata(script->state, assets);  // [table] [ptr]
+    lua_setfield(script->state, -2, "assets");     // [table]
+
+    // if (lua_pcall(script->state, 5, 0, 0) != LUA_OK) {
+    //     char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
+    //     Log_Err(err_text);
+    //     free(err_text);
+    // }
+
     lua_settop(script->state, 0);  // Empty the stack
 }

@@ -1,5 +1,7 @@
 #include "ldefs.h"
 
+#include "lua54/lauxlib.h"
+
 #include "actor.h"
 #include "keys.h"
 #include "log.h"
@@ -67,8 +69,24 @@ LDEF(Scene_GetActorByName) {
     return 1;
 }
 
+LDEF(Scene_NewActorFromSpec) {
+    gg_scene_t* scene = (gg_scene_t*)lua_topointer(L, 1);
+    gg_assets_t* assets = (gg_assets_t*)lua_topointer(L, 2);
+    gg_window_t* window = (gg_window_t*)lua_topointer(L, 3);
+    gg_actor_spec_t* actor_spec = (gg_actor_spec_t*)lua_topointer(L, 4);
+
+    if (scene != NULL && actor_spec != NULL && assets != NULL && window != NULL) {
+        uint32_t new_actor_id = Scene_NewActorFromSpec(scene, assets, window, actor_spec);
+        lua_pushlightuserdata(L, Scene_GetActorByID(scene, new_actor_id));
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
 // ASSETS FUNCTIONS
-static void LDefs_S_PushAssetValue(lua_State* L, gg_asset_t* asset, int asset_type) {
+static void LDefs_S_PushAssetValue(lua_State* L, gg_asset_t* asset, gg_asset_type_e asset_type) {
     switch (asset_type) {
         case ASSET_SCENE:
             lua_pushlightuserdata(L, &asset->data.as_scene);
@@ -82,7 +100,11 @@ static void LDefs_S_PushAssetValue(lua_State* L, gg_asset_t* asset, int asset_ty
         case ASSET_TILED_MAP:
             lua_pushlightuserdata(L, &asset->data.as_tiled_map);
             break;
+        case ASSET_ACTOR_SPEC:
+            lua_pushlightuserdata(L, &asset->data.as_actor_spec);
+            break;
         default:
+            luaL_error(L, "unsupported asset type %s", Assets_GetTypeName(asset_type));
             lua_pushnil(L);
             break;
     }
@@ -118,10 +140,12 @@ LDEF(Assets_Get) {
             LDefs_S_PushAssetValue(L, asset, type);
             return 1;
         } else {
+            luaL_error(L, "no asset by name %s", name);
             lua_pushnil(L);
             return 1;
         }
     } else {
+        luaL_error(L, "nil assets passed to Assets_Get");
         lua_pushnil(L);
         return 1;
     }
@@ -148,7 +172,7 @@ LDEF(Camera_SetPosition) {
         camera->x = (float)x;
         camera->y = (float)y;
     } else {
-        Log_Err("LUA: NULL camera to Camera_SetPosition");
+        luaL_error(L, "nil camera to Camera_SetPosition");
     }
 
     return 0;
@@ -162,7 +186,7 @@ LDEF(Camera_SetZoom) {
     if (camera != NULL) {
         camera->zoom = zoom;
     } else {
-        Log_Err("LUA: NULL camera to Camera_SetZoom");
+        luaL_error(L, "nil camera to Camera_SetZoom");
     }
 
     return 0;
@@ -189,8 +213,12 @@ LDEF(Actor_SetPosition) {
     float x = (float)lua_tonumber(L, 2);
     float y = (float)lua_tonumber(L, 3);
 
-    actor->transform.pos.x = x;
-    actor->transform.pos.y = y;
+    if (actor != NULL) {
+        actor->transform.pos.x = x;
+        actor->transform.pos.y = y;
+    } else {
+        luaL_error(L, "nil actor to Actor_SetPosition");
+    }
 
     return 0;
 }
@@ -202,6 +230,15 @@ LDEF(TiledMap_Draw) {
 
     int32_t x = (int32_t)lua_tointeger(L, 2);
     int32_t y = (int32_t)lua_tointeger(L, 3);
+
+    if (map == NULL) {
+        luaL_error(L, "nil map to TiledMap_Draw");
+        return 0;
+    }
+    if (window == NULL) {
+        luaL_error(L, "nil window to TiledMap_Draw");
+        return 0;
+    }
 
     TiledMap_Draw(map, window, x, y);
 
@@ -217,7 +254,11 @@ LDEF(Window_DrawRectangle) {
     uint32_t w = (uint32_t)lua_tointeger(L, 4);
     uint32_t h = (uint32_t)lua_tointeger(L, 5);
 
-    Window_DrawRectangle(window, x, y, w, h, COL(255, 128, 128));
+    if (window != NULL) {
+        Window_DrawRectangle(window, x, y, w, h, COL(255, 128, 128));
+    } else {
+        luaL_error(L, "nil window to Window_DrawRectangle");
+    }
 
     return 0;
 }
@@ -229,11 +270,16 @@ LDEF(Window_DrawTexture) {
     int32_t x = (int32_t)lua_tonumber(L, 3);
     int32_t y = (int32_t)lua_tonumber(L, 4);
 
-    if (tex != NULL) {
-        Window_DrawTexture(window, tex, x, y);
-    } else {
-        Log_Err("LUA: NULL tex passed to Window_DrawTexture");
+    if (window == NULL) {
+        luaL_error(L, "nil window to Window_DrawTexture");
+        return 0;
     }
+    if (tex == NULL) {
+        luaL_error(L, "nil tex to Window_DrawTexture");
+        return 0;
+    }
+    
+    Window_DrawTexture(window, tex, x, y);
 
     return 0;
 }
@@ -244,19 +290,30 @@ LDEF(Keys_KeyDown) {
 
     int32_t key = (int32_t)lua_tointeger(L, 2);
 
-    bool down = Keys_KeyDown(keys, key);
-    lua_pushboolean(L, down);
+    if (keys != NULL) {
+        bool down = Keys_KeyDown(keys, key);
+        lua_pushboolean(L, down);
+    } else {
+        luaL_error(L, "nil keys to Keys_KeyDown");
+        lua_pushboolean(L, false);
+    }
 
     return 1;
 }
 
 // UTILITY FUNCTIONS
 LDEF(IsNull) {
-    const void* ptr = lua_topointer(L, 1);
+    if (lua_isnoneornil(L, 1)) {
+        lua_pushboolean(L, true);
 
-    lua_pushboolean(L, ptr == NULL);
+        return 1;
+    } else {
+        const void* ptr = lua_topointer(L, 1);
 
-    return 1;
+        lua_pushboolean(L, ptr == NULL);
+
+        return 1;
+    }   
 }
 
 void LDefs_LoadIntoScripting(gg_scripting_t* scripting) {
@@ -280,6 +337,7 @@ void LDefs_LoadIntoScripting(gg_scripting_t* scripting) {
 
     LDEF_LOAD(scripting, Scene_GetCamera);
     LDEF_LOAD(scripting, Scene_GetActorByName);
+    LDEF_LOAD(scripting, Scene_NewActorFromSpec);
 
     LDEF_LOAD(scripting, Assets_Get);
 
