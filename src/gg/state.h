@@ -5,7 +5,7 @@
 #include "scene.h"
 #include "tiled.h"
 #include "window.h"
-#include "editor.h"
+#include "editor/editor.h"
 
 typedef struct gg_state {
     gg_scene_t* current_scene;

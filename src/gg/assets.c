@@ -14,12 +14,7 @@ void Assets_LoadInternals(gg_assets_t* assets, gg_window_t* window, gg_state_t* 
 }
 
 void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg_asset_type_e type, const char* name) {
-    gg_asset_pair_t* pair = (gg_asset_pair_t*)malloc(sizeof(gg_asset_pair_t));
-
-    pair->name = (char*)calloc(256, sizeof(char));
-    TextCopy(pair->name, name);
-    pair->asset.type = type;
-    pair->next = NULL;
+    gg_asset_pair_t* pair = Assets_CreateNew(assets, type, name);
 
     // Load actual data
     char formatted_path[ASSETS_MAX_PATH_LENGTH] = {0};
@@ -50,21 +45,6 @@ void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg
             printf("ASSET LOAD: Unsupported asset type number %d...\n", type);
             break;
     }
-
-    // Easy out if first pair
-    if (assets->asset_list == NULL) {
-        assets->asset_list = pair;
-        return;
-    }
-
-    // Append to linked list
-    // TODO: Might be broken???? I was working on it when it broke (2/16/24) and
-    // it started working suddenly. not sure what's up, good luck soldier
-    gg_asset_pair_t* last_pair = assets->asset_list;
-    while (last_pair->next != NULL) {
-        last_pair = last_pair->next;
-    }
-    last_pair->next = pair;
 }
 
 // gg_asset_t* Assets_Get(gg_assets_t* assets, const char* name) {
@@ -106,6 +86,32 @@ bool Assets_Get(gg_assets_t* assets, gg_asset_t** asset_ptr, const char* name) {
 
     Log_Warn(Log_TextFormat("ASSETS: Unable to GET() asset name %s!", name));
     return false;
+}
+
+gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, const char* name) {
+    gg_asset_pair_t* pair = (gg_asset_pair_t*)calloc(1, sizeof(gg_asset_pair_t));
+
+    pair->name = (char*)calloc(256, sizeof(char));
+    TextCopy(pair->name, name);
+    pair->asset.type = type;
+    pair->next = NULL;
+
+    // Easy out if first pair
+    if (assets->asset_list == NULL) {
+        assets->asset_list = pair;
+        return pair;
+    }
+
+    // Append to linked list
+    // TODO: Might be broken???? I was working on it when it broke (2/16/24) and
+    // it started working suddenly. not sure what's up, good luck soldier
+    gg_asset_pair_t* last_pair = assets->asset_list;
+    while (last_pair->next != NULL) {
+        last_pair = last_pair->next;
+    }
+    last_pair->next = pair;
+
+    return pair;
 }
 
 const char* Assets_GetTypeName(gg_asset_type_e type) {

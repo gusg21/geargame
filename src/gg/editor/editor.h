@@ -3,7 +3,7 @@
 #if !defined(GG_EDITOR_H)
 #define GG_EDITOR_H
 
-#include "cimgui_impl_raylib.h"
+#include "../cimgui_impl_raylib.h"
 
 #include <stdbool.h>
 
@@ -15,6 +15,7 @@ typedef struct gg_asset_pair gg_asset_pair_t;
 #define EDITOR_LUA_CONSOLE_LINES 30
 #define EDITOR_LUA_MAX_LINE_LENGTH 256
 #define EDITOR_LUA_INPUT_LINE_LENGTH 128
+#define EDITOR_NEW_ASSET_NAME_LENGTH 64
 
 typedef struct gg_editor {
     bool is_code_editor_open;
@@ -27,6 +28,7 @@ typedef struct gg_editor {
 
     bool is_assets_viewer_open;
     bool is_assets_viewer_visible;
+    char new_asset_name[EDITOR_NEW_ASSET_NAME_LENGTH];
 
     bool is_demo_window_open;
     bool is_demo_window_visible;

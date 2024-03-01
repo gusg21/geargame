@@ -2,11 +2,11 @@
 
 #include <string.h>
 
-#include "actor.h"
-#include "assets.h"
+#include "../actor.h"
+#include "../assets.h"
 #include "editor.h"
-#include "state.h"
-#include "utils.h"
+#include "../state.h"
+#include "../utils.h"
 
 static gg_editor_t* g_editor;
 
@@ -51,6 +51,7 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
     TextEditor_create(&editor->text_editor);
 
     editor->is_scene_viewer_visible = true;
+    editor->is_assets_viewer_visible = true;
     editor->lua_console_lines = calloc(EDITOR_LUA_CONSOLE_LINES, sizeof(char*));
 
     SetTraceLogCallback(Editor_S_TraceLogCallback);
@@ -158,9 +159,9 @@ static void Editor_S_AssetPairInfo(gg_editor_t* editor, gg_asset_pair_t* pair) {
             break;
         }
         case ASSET_ACTOR_SPEC: {
-            igText("Name: %s", pair->asset.data.as_actor_spec.name);
-            igText("Script Asset: %s", pair->asset.data.as_actor_spec.script_asset_name);
-            igText("Initial Position: %.2f, %.2f", pair->asset.data.as_actor_spec.initial_pos.x,
+            igText("Actor Name: \"%s\"", pair->asset.data.as_actor_spec.name);
+            igText("Script Asset: \"%s\"", pair->asset.data.as_actor_spec.script_asset_name);
+            igText("Initial Position: (%.2f, %.2f)", pair->asset.data.as_actor_spec.initial_pos.x,
                    pair->asset.data.as_actor_spec.initial_pos.y);
             break;
         }
@@ -219,6 +220,43 @@ static void Editor_S_DoAssetsViewer(gg_editor_t* editor, gg_state_t* state, gg_a
     igBegin("Assets Viewer", &editor->is_assets_viewer_open, 0);
     {
         Editor_S_Header(editor, (ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, "Assets Viewer");
+
+        if (igBeginPopup("Create New Asset Popup", ImGuiWindowFlags_NoDecoration)) {
+            if (igBeginPopup("Create New Actor Spec Popup", ImGuiWindowFlags_NoDecoration)) {
+                Editor_S_Header(editor, (ImVec4){225/255.f, 255/255.f, 74/255.f, 255/255.f}, "New Actor Spec");
+
+                igInputText2("Asset Name", editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
+
+                if (igButton2("Create!")) {
+                    gg_asset_pair_t* new_asset_pair = Assets_CreateNew(assets, ASSET_ACTOR_SPEC, editor->new_asset_name);
+
+                    igClosePopupToLevel(0, true);
+                }
+
+                igEndPopup();
+            }
+
+            for (uint32_t type = 0; type < ASSET_TYPE_COUNT; type++) {
+                if (igButton2(Assets_GetTypeName(type))) {
+                    switch (type) {
+                        case ASSET_ACTOR_SPEC:
+                            igOpenPopup_Str("Create New Actor Spec Popup", 0);
+                            break;
+                        default:
+                            igCloseCurrentPopup();
+                            break;
+                    }
+                }
+            }
+
+            igEndPopup();
+        }
+
+        if (igButton2("Create New Asset")) {
+            igOpenPopup_Str("Create New Asset Popup", 0);
+        }
+
+        igSeparator();
 
         gg_asset_pair_t* pair = assets->asset_list;
         int id = 0;

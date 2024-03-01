@@ -4,12 +4,13 @@ set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_FILES
 
+    editor/editor.c
+
     actor.c
     actorspec.c
     assets.c
     camera.c
     cimgui_impl_raylib.c
-    editor.c
     grid.c
     keys.c
     ldefs.c

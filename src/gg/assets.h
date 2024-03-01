@@ -53,6 +53,7 @@ void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg
 //gg_asset_t* Assets_Get(gg_assets_t* assets, const char* name);
 bool Assets_Has(gg_assets_t* assets, const char* name);
 bool Assets_Get(gg_assets_t* assets, gg_asset_t** asset_ptr, const char* name);
+gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, const char* name);
 const char* Assets_GetTypeName(gg_asset_type_e type);
 void Assets_FindAssetsByType(gg_assets_t* assets, char** string_list, gg_asset_type_e type);
 void Assets_Destroy(gg_assets_t* assets);
