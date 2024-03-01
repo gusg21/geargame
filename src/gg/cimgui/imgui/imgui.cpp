@@ -9536,10 +9536,6 @@ static void ImGui::UpdateKeyboardInputs()
     io.KeyMods = GetMergedModsFromKeys();
     io.KeyCtrl = (io.KeyMods & ImGuiMod_Ctrl) != 0;
     io.KeyShift = (io.KeyMods & ImGuiMod_Shift) != 0;
-    if (io.KeyShift)
-    {
-        int blah;
-    }
     io.KeyAlt = (io.KeyMods & ImGuiMod_Alt) != 0;
     io.KeySuper = (io.KeyMods & ImGuiMod_Super) != 0;
     if (prev_key_mods != io.KeyMods)

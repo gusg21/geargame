@@ -1,3 +1,5 @@
+#ifdef GG_EDITOR
+
 #if !defined(GG_EDITOR_H)
 #define GG_EDITOR_H
 
@@ -40,3 +42,5 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting);
 void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window);
 
 #endif // GG_EDITOR_H
+
+#endif // GG_EDITOR

@@ -43,8 +43,11 @@ CIMGUI_API size_t TextEditor_getTextLength(ImTextEditor* ied) {
 
 CIMGUI_API char* TextEditor_getText(ImTextEditor* ied) {
     size_t text_length = TextEditor_getTextLength(ied);
-    void* text = malloc(text_length * sizeof(char));
-    memcpy(text, ((TextEditor*)ied->edit)->GetText().c_str(), text_length);
+    void* editor_text = calloc(text_length + 1, sizeof(char));
+    memcpy(editor_text, ((TextEditor*)ied->edit)->GetText().c_str(), text_length);
+    void* text;
+    text = calloc(text_length, sizeof(char));
+    memcpy(text, editor_text, text_length - 1);
     return (char*)text;
 }
 

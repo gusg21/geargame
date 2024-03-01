@@ -9,7 +9,7 @@ include(cmake/get_cpm.cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
-add_compile_definitions(GG_DEBUG)
+add_compile_definitions(GG_EDITOR)
 
 if (APPLE)
     add_compile_definitions(APPLE)

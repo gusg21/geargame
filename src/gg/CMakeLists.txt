@@ -38,6 +38,7 @@ target_link_libraries(gglib raylib)
 add_subdirectory(parson)
 target_link_libraries(gglib parson)
 
+set(IMGUI_STATIC ON)
 add_subdirectory(cimgui)
 target_link_libraries(gglib cimgui)
 

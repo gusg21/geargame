@@ -1,4 +1,4 @@
-#ifdef GG_DEBUG
+#ifdef GG_EDITOR
 
 #include <string.h>
 
@@ -31,7 +31,7 @@ static void Editor_S_AppendLuaConsoleLine(gg_editor_t* editor, const char* text)
 
 static void Editor_S_TraceLogCallback(int logLevel, const char* text, va_list args) {
     char line[1024] = {0};
-    sprintf(line, "%d: %s", logLevel, text);
+    sprintf_s(line, 1024, "%d: %s", logLevel, text);
     printf("%s\n", line);
 }
 
@@ -41,6 +41,8 @@ static int Editor_S_LuaPrint(lua_State* L) {
     printf("%s\t", text);
     Editor_S_AppendLuaConsoleLine(g_editor, text);
     printf("\n");
+
+    return 0;
 }
 
 void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
@@ -234,6 +236,9 @@ static void Editor_S_DoAssetsViewer(gg_editor_t* editor, gg_state_t* state, gg_a
 }
 
 static void Editor_S_SaveTextEditorAsset(gg_editor_t* editor, gg_asset_pair_t* pair) {
+    if (pair->asset.data.as_script.text != NULL)
+        free(pair->asset.data.as_script.text);
+
     char* code = TextEditor_getText(&editor->text_editor);  // Managed by us now
     pair->asset.data.as_script.text = code;
     pair->asset.data.as_script.ok = true;
@@ -267,7 +272,7 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
     {
         igSetWindowPos_Vec2((ImVec2){0, 0}, ImGuiCond_Always);
-        igSetWindowSize_Vec2((ImVec2){GetScreenWidth(), 36}, ImGuiCond_Always);
+        igSetWindowSize_Vec2((ImVec2){(float)GetScreenWidth(), 36}, ImGuiCond_Always);
 
         if (igButton2("Quit")) {
             State_Quit(state);
@@ -316,36 +321,33 @@ static void Editor_S_DoLuaConsole(gg_editor_t* editor, gg_state_t* state, gg_ass
     ImVec2 size;
     igCalcTextSize(&size, "TALL LETTERS", NULL, false, 0);
     float height = igGetStyle()->ItemSpacing.y + size.y;
-    igSetNextWindowSizeConstraints2((ImVec2){0.f, 0.f},
-                                    (ImVec2){FLT_MAX, (EDITOR_LUA_CONSOLE_LINES + 4) * height});
+    igSetNextWindowSizeConstraints2((ImVec2){0.f, 0.f}, (ImVec2){FLT_MAX, (EDITOR_LUA_CONSOLE_LINES + 4) * height});
     if (igBegin("Lua Console", &editor->is_lua_console_open, 0)) {
         igBeginChild_ID(1791, (ImVec2){0, -30}, ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
         for (int32_t i = EDITOR_LUA_CONSOLE_LINES - 1; i >= 0; i--) {
             if (editor->lua_console_lines[i]) {
-                igTextColored((ImVec4){
-                    editor->lua_console_line_colors[i].r / 255.f,
-                    editor->lua_console_line_colors[i].g / 255.f,
-                    editor->lua_console_line_colors[i].b / 255.f,
-                    editor->lua_console_line_colors[i].a / 255.f
-                }, "%s", editor->lua_console_lines[i]);
+                igTextColored(
+                    (ImVec4){editor->lua_console_line_colors[i].r / 255.f, editor->lua_console_line_colors[i].g / 255.f,
+                             editor->lua_console_line_colors[i].b / 255.f,
+                             editor->lua_console_line_colors[i].a / 255.f},
+                    "%s", editor->lua_console_lines[i]);
             } else {
                 igText("");
             }
         }
         igEndChild();
 
-        if (igInputText("<", &editor->lua_input_line, 127, ImGuiInputTextFlags_EnterReturnsTrue, NULL, NULL)) {
+        if (igInputText("<", editor->lua_input_line, 127, ImGuiInputTextFlags_EnterReturnsTrue, NULL, NULL)) {
             igSetKeyboardFocusHere(-1);
             Editor_S_ExecuteLuaLine(editor, &state->current_scene->scripting);
-
         }
         igSameLine2();
         if (igButton2("Enter")) {
             Editor_S_ExecuteLuaLine(editor, &state->current_scene->scripting);
         }
 
-        igEnd();
     }
+    igEnd();
 }
 
 void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
@@ -358,4 +360,4 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     if (editor->is_demo_window_visible) igShowDemoWindow(&editor->is_demo_window_open);
 }
 
-#endif  // GG_DEBUG
+#endif  // GG_EDITOR

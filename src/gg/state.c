@@ -8,7 +8,7 @@
 #include "tiled.h"
 
 void State_Init(gg_state_t* state) {
-#ifdef GG_DEBUG
+#ifdef GG_EDITOR
     igCreateContext(NULL);
 
     ImGui_ImplRaylib_Init();
@@ -23,7 +23,9 @@ void State_Init(gg_state_t* state) {
 
 void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { 
     state->current_scene = scene;
+#ifdef GG_EDITOR
     Editor_Create(&state->editor, &scene->scripting);
+#endif
  }
 
 void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
@@ -32,7 +34,7 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     }
 
     while (!Window_ShouldClose(window)) {
-#ifdef GG_DEBUG
+#ifdef GG_EDITOR
         ImGuiIO* io = igGetIO();
 
         ImGui_ImplRaylib_ProcessEvent();
@@ -44,7 +46,7 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
         State_Tick(state, window);
         
 
-#ifdef GG_DEBUG
+#ifdef GG_EDITOR
         State_TickEditor(state, assets, window);
 #endif
 
@@ -69,9 +71,11 @@ void State_Tick(gg_state_t* state, gg_window_t* window) {
     }
 }
 
+#ifdef GG_EDITOR
 void State_TickEditor(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     Editor_Update(&state->editor, state, assets, window);
 }
+#endif
 
 void State_Draw(gg_state_t* state, gg_window_t* window) {
     Window_ClearScreen(window, COL(10, 20, 30));
@@ -95,10 +99,10 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         {
             Window_DrawDebugFPS(window);
 
-#ifdef GG_DEBUG
+#ifdef GG_EDITOR
             ImGui_ImplRaylib_Render();
-            igUpdatePlatformWindows();
-            igRenderPlatformWindowsDefault(NULL, NULL);
+            // igUpdatePlatformWindows();
+            // igRenderPlatformWindowsDefault(NULL, NULL);
 #endif
             
 
