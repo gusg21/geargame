@@ -13,8 +13,6 @@ void State_Init(gg_state_t* state) {
 
     ImGui_ImplRaylib_Init();
     igStyleColorsDark(NULL);
-
-    Editor_Create(&state->editor);
 #endif
 
     Keys_Create(&state->keys);
@@ -23,7 +21,10 @@ void State_Init(gg_state_t* state) {
     state->wants_exit = false;
 }
 
-void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { state->current_scene = scene; }
+void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { 
+    state->current_scene = scene;
+    Editor_Create(&state->editor, &scene->scripting);
+ }
 
 void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     if (state->current_scene != NULL) {

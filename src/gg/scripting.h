@@ -33,7 +33,10 @@ uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code);
 uint32_t Scripting_ReloadScript(gg_scripting_t* script, gg_script_t* code, uint32_t handle);
 bool Scripting_IsOk(gg_scripting_t* script);
 void Scripting_DoGarbageCollection(gg_scripting_t* script);
+void Scripting_GetHandleString(gg_scripting_t* script, char* string, size_t str_len, uint32_t handle);
 // TODO: Get object handle
+int32_t Scripting_RunCode(gg_scripting_t* script, const char* code);
+const char* Scripting_GetError(gg_scripting_t* script);
 void Scripting_Call(gg_scripting_t* script, const char* func_name, uint32_t handle);
 void Scripting_CallWithFloat(gg_scripting_t* script, const char* func_name, uint32_t handle, float f);
 void Scripting_CallWithPointer(gg_scripting_t* script, const char* func_name, uint32_t handle, void* pointer);

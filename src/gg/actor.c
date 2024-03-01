@@ -1,5 +1,7 @@
 #include "actor.h"
 
+#include <string.h>
+
 #include "log.h"
 #include "scripting.h"
 
@@ -9,7 +11,7 @@ void Actor_ResetActor(gg_actor_t* actor) {
     actor->_internal[2] = 'T';
     actor->_internal[3] = 'O';
 
-    actor->name = NULL;
+    memset(actor->name, 0, 32);
     actor->alive = false;
     actor->visible = false;
     actor->transform = (gg_transform_t){

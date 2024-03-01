@@ -120,7 +120,6 @@ void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_
         Actor_CallScriptFunctionWithPointer(actor, &scene->scripting, SCENE_MAP_RENDERER_SETUP_NAME,
                                                    tmap);
 
-        actor->name = malloc(sizeof(char) * 64);
         TextCopy(actor->name, "map renderer");
     }
 
@@ -142,7 +141,6 @@ void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_
         actor->transform.pos.x = (float)object->x;
         actor->transform.pos.y = (float)object->y;
 
-        actor->name = malloc(sizeof(char) * 64);
         TextCopy(actor->name, object->name);
 
         object = object->next;

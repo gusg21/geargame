@@ -181,6 +181,10 @@ CIMGUI_API bool igBeginChild_ID(ImGuiID id,const ImVec2 size,ImGuiChildFlags chi
 {
     return ImGui::BeginChild(id,size,child_flags,window_flags);
 }
+CIMGUI_API bool igBeginChild_ID2(ImGuiID id,ImGuiChildFlags child_flags,ImGuiWindowFlags window_flags)
+{
+    return ImGui::BeginChild(id,ImVec2(0, 0),child_flags,window_flags);
+}
 CIMGUI_API void igEndChild()
 {
     return ImGui::EndChild();
@@ -240,6 +244,9 @@ CIMGUI_API void igSetNextWindowSize(const ImVec2 size,ImGuiCond cond)
 CIMGUI_API void igSetNextWindowSizeConstraints(const ImVec2 size_min,const ImVec2 size_max,ImGuiSizeCallback custom_callback,void* custom_callback_data)
 {
     return ImGui::SetNextWindowSizeConstraints(size_min,size_max,custom_callback,custom_callback_data);
+}
+CIMGUI_API void igSetNextWindowSizeConstraints2(const ImVec2 size_min,const ImVec2 size_max) {
+    return ImGui::SetNextWindowSizeConstraints(size_min,size_max);
 }
 CIMGUI_API void igSetNextWindowContentSize(const ImVec2 size)
 {
@@ -521,9 +528,17 @@ CIMGUI_API void igIndent(float indent_w)
 {
     return ImGui::Indent(indent_w);
 }
+CIMGUI_API void igIndent2()
+{
+    return ImGui::Indent();
+}
 CIMGUI_API void igUnindent(float indent_w)
 {
     return ImGui::Unindent(indent_w);
+}
+CIMGUI_API void igUnindent2()
+{
+    return ImGui::Unindent();
 }
 CIMGUI_API void igBeginGroup()
 {
@@ -843,6 +858,14 @@ CIMGUI_API bool igInputText(const char* label,char* buf,size_t buf_size,ImGuiInp
 {
     return ImGui::InputText(label,buf,buf_size,flags,callback,user_data);
 }
+CIMGUI_API bool igInputText2(const char* label,char* buf,size_t buf_size)
+{
+    return ImGui::InputText(label,buf,buf_size);
+}
+CIMGUI_API bool igInputText3(const char* label,char* buf,size_t buf_size,ImGuiInputTextFlags flags)
+{
+    return ImGui::InputText(label,buf,buf_size,flags);
+}
 CIMGUI_API bool igInputTextMultiline(const char* label,char* buf,size_t buf_size,const ImVec2 size,ImGuiInputTextFlags flags,ImGuiInputTextCallback callback,void* user_data)
 {
     return ImGui::InputTextMultiline(label,buf,buf_size,size,flags,callback,user_data);
@@ -855,9 +878,17 @@ CIMGUI_API bool igInputFloat(const char* label,float* v,float step,float step_fa
 {
     return ImGui::InputFloat(label,v,step,step_fast,format,flags);
 }
+CIMGUI_API bool igInputFloat_s(const char* label,float* v)
+{
+    return ImGui::InputFloat(label,v);
+}
 CIMGUI_API bool igInputFloat2(const char* label,float v[2],const char* format,ImGuiInputTextFlags flags)
 {
     return ImGui::InputFloat2(label,v,format,flags);
+}
+CIMGUI_API bool igInputFloat2_s(const char* label,float v[2])
+{
+    return ImGui::InputFloat2(label,v);
 }
 CIMGUI_API bool igInputFloat3(const char* label,float v[3],const char* format,ImGuiInputTextFlags flags)
 {

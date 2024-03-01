@@ -14,7 +14,7 @@
 
 typedef struct gg_actor {      // TODO: actor.h?
     char _internal[4];
-    char* name;                // Name of the actor
+    char name[32];                // Name of the actor
     bool alive;                // Should we get updates? (NOTE: Don't modify directly!)
     bool visible;              // Should we get drawn?
     gg_transform_t transform;  // Our local transform

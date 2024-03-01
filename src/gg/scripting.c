@@ -80,6 +80,21 @@ bool Scripting_IsOk(gg_scripting_t* script) {
 
 void Scripting_DoGarbageCollection(gg_scripting_t* script) { lua_gc(script->state, LUA_GCCOLLECT); }
 
+void Scripting_GetHandleString(gg_scripting_t* script, char* string, size_t str_len, uint32_t handle) {
+    sprintf_s(string, str_len, SCRIPTING_HANDLE_FORMAT, handle);
+}
+
+int32_t Scripting_RunCode(gg_scripting_t* script, const char* code) {
+    if (!Scripting_IsOk(script)) return 1;
+
+    int32_t error = luaL_dostring(script->state, code);
+    return error;
+}
+
+const char* Scripting_GetError(gg_scripting_t* script) { 
+    return lua_tostring(script->state, -1);
+ }
+
 void Scripting_Call(gg_scripting_t* script, const char* func_name, uint32_t handle) {
     if (!Scripting_IsOk(script)) return;
 
