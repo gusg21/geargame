@@ -1,0 +1,8 @@
+{
+    "name": "Diamond",
+    "script": "sc_diamond",
+    "position": {
+        "x": 10,
+        "y": 20
+    }
+}

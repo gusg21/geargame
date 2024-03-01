@@ -14,9 +14,13 @@ function cam:ready()
 
     self.x = 0
     self.tex = Assets_Get(self.assets, ASSET_TEXTURE, "sunset")
+    self.diamond_spec = Assets_Get(self.assets, ASSET_ACTOR_SPEC, "as_diamond")
 
     self.scene = State_GetScene(self.state)
     assert(not IsNull(self.scene), "state doesn't have a scene?")
+
+    Scene_
+
     self.camera = Scene_GetCamera(self.scene)
     assert(not IsNull(self.camera), "scene doesn't have a camera?")
     Camera_SetZoom(self.camera, 3)

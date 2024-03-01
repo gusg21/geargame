@@ -79,7 +79,7 @@
                         {
                          "name":"script",
                          "type":"string",
-                         "value":"camera"
+                         "value":"sc_camera"
                         }],
                  "rotation":0,
                  "type":"",

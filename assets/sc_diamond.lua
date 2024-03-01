@@ -1,0 +1,5 @@
+local diamond = {}
+
+
+
+return diamond

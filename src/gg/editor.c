@@ -162,6 +162,13 @@ static void Editor_S_AssetPairInfo(gg_editor_t* editor, gg_asset_pair_t* pair) {
 
             break;
         }
+        case ASSET_ACTOR_SPEC: {
+            igText("Name: %s", pair->asset.data.as_actor_spec.name);
+            igText("Script Asset: %s", pair->asset.data.as_actor_spec.script_asset_name);
+            igText("Initial Position: %.2f, %.2f", pair->asset.data.as_actor_spec.initial_pos.x,
+                   pair->asset.data.as_actor_spec.initial_pos.y);
+            break;
+        }
         default:
             igTextColored((ImVec4){0.5f, 0.5f, 0.5f, 1.0f}, "No preview for %s", type_name);
             break;
@@ -236,8 +243,7 @@ static void Editor_S_DoAssetsViewer(gg_editor_t* editor, gg_state_t* state, gg_a
 }
 
 static void Editor_S_SaveTextEditorAsset(gg_editor_t* editor, gg_asset_pair_t* pair) {
-    if (pair->asset.data.as_script.text != NULL)
-        free(pair->asset.data.as_script.text);
+    if (pair->asset.data.as_script.text != NULL) free(pair->asset.data.as_script.text);
 
     char* code = TextEditor_getText(&editor->text_editor);  // Managed by us now
     pair->asset.data.as_script.text = code;
@@ -345,7 +351,6 @@ static void Editor_S_DoLuaConsole(gg_editor_t* editor, gg_state_t* state, gg_ass
         if (igButton2("Enter")) {
             Editor_S_ExecuteLuaLine(editor, &state->current_scene->scripting);
         }
-
     }
     igEnd();
 }

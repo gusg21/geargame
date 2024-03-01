@@ -263,18 +263,16 @@ void LDefs_LoadIntoScripting(gg_scripting_t* scripting) {
     // Globals
     lua_pushinteger(scripting->state, ASSET_NONE);
     lua_setglobal(scripting->state, "ASSET_NONE");
-
     lua_pushinteger(scripting->state, ASSET_SCENE);
     lua_setglobal(scripting->state, "ASSET_SCENE");
-
     lua_pushinteger(scripting->state, ASSET_SCRIPT);
     lua_setglobal(scripting->state, "ASSET_SCRIPT");
-
     lua_pushinteger(scripting->state, ASSET_TEXTURE);
     lua_setglobal(scripting->state, "ASSET_TEXTURE");
-
     lua_pushinteger(scripting->state, ASSET_TILED_MAP);
     lua_setglobal(scripting->state, "ASSET_TILED_MAP");
+    lua_pushinteger(scripting->state, ASSET_ACTOR_SPEC);
+    lua_setglobal(scripting->state, "ASSET_ACTOR_SPEC");
 
     // Functions
     LDEF_LOAD(scripting, State_GetKeys);

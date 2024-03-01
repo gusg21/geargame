@@ -3,18 +3,23 @@
 
 #include <stdlib.h>
 
+#include "actorspec.h"
 #include "assets.h"
 #include "scene.h"
 #include "scripting.h"
 #include "tiled.h"
 #include "texture.h"
 
+#define ASSETS_MAX_PATH_LENGTH 256
+
 typedef enum gg_asset_type {
     ASSET_NONE,
     ASSET_TEXTURE,
     ASSET_TILED_MAP,
     ASSET_SCRIPT,
-    ASSET_SCENE
+    ASSET_SCENE,
+    ASSET_ACTOR_SPEC,
+    ASSET_TYPE_COUNT
 } gg_asset_type_e;
 
 typedef union gg_asset_data {
@@ -22,6 +27,7 @@ typedef union gg_asset_data {
     gg_tiled_map_t as_tiled_map;
     gg_script_t as_script;
     gg_scene_t as_scene;
+    gg_actor_spec_t as_actor_spec;
 } gg_asset_data_u;
 
 typedef struct gg_asset {

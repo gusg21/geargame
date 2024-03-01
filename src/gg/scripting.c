@@ -16,14 +16,14 @@ void Script_LoadFromLua(gg_script_t* code, const char* path) {
 
     FILE* code_file = fopen(path, "r");
     if (code_file == NULL) {
-        printf("ERROR: Error opening script from %s\n", path);
+        Log_Err(Log_TextFormat("SCRIPT LOAD: Error opening script from %s", path));
         code->ok = false;
         return;
     }
 
     size_t amt_read = fread(code->text, sizeof(char), SCRIPT_MAX_LENGTH - 1, code_file);
     if (amt_read > SCRIPT_MAX_LENGTH - 1) {
-        printf("ERROR: Error reading script from %s\n", path);
+        Log_Err(Log_TextFormat("SCRIPT LOAD: Error reading script from %s", path));
         code->ok = false;
         fclose(code_file);
         return;
@@ -51,11 +51,11 @@ uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code) {
 uint32_t Scripting_ReloadScript(gg_scripting_t* script, gg_script_t* code, uint32_t handle) {
     // printf("Loading script %s\n", data);
     if (code == NULL) {
-        printf("ERROR (loading): no code!\n");
+        Log_Err(Log_TextFormat("SCRIPT RUN: no code! (handle %d)", handle));
         return SCRIPTING_BAD_HANDLE;
     }
     if (!code->ok) {
-        printf("ERROR (loading): bad code!\n");
+        Log_Err(Log_TextFormat("SCRIPT RUN: bad code! (handle %d)", handle));
         return SCRIPTING_BAD_HANDLE;
     }
 
@@ -63,7 +63,7 @@ uint32_t Scripting_ReloadScript(gg_scripting_t* script, gg_script_t* code, uint3
     sprintf_s(handle_string, 16, SCRIPTING_HANDLE_FORMAT, handle);
 
     if (luaL_dostring(script->state, code->text) != LUA_OK) {
-        printf("ERROR (loading): %s\n", lua_tostring(script->state, -1));
+        Log_Err(Log_TextFormat("SCRIPT RUN: %s", lua_tostring(script->state, -1)));
     }
     lua_setglobal(script->state, handle_string);
 

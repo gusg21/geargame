@@ -17,10 +17,12 @@ int main() {
 
     // Load the assets
     Assets_LoadInternals(&assets, &window, &state);
-    Assets_Load(&assets, &window, &state, ASSET_SCRIPT, "camera");
+    Assets_Load(&assets, &window, &state, ASSET_SCRIPT, "sc_camera");
+    Assets_Load(&assets, &window, &state, ASSET_SCRIPT, "sc_diamond");
     Assets_Load(&assets, &window, &state, ASSET_TEXTURE, "sunset");
     Assets_Load(&assets, &window, &state, ASSET_TILED_MAP, "area1");
     Assets_Load(&assets, &window, &state, ASSET_SCENE, "scene1");
+    Assets_Load(&assets, &window, &state, ASSET_ACTOR_SPEC, "as_diamond");
 
     // Load up the scene
     gg_asset_t* scene_asset;

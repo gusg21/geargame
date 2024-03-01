@@ -22,28 +22,32 @@ void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg
     pair->next = NULL;
 
     // Load actual data
-    char formatted_path[256] = {0};
+    char formatted_path[ASSETS_MAX_PATH_LENGTH] = {0};
     switch (type) {
         case ASSET_TEXTURE:
-            sprintf_s(formatted_path, 256, "assets/%s.png", name);
+            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.png", name);
             Texture_LoadFromFile(&pair->asset.data.as_tex, formatted_path);
             break;
         case ASSET_TILED_MAP:
-            sprintf_s(formatted_path, 256, "assets/%s.tmj", name);
+            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.tmj", name);
             TiledMap_LoadFromTMJ(&pair->asset.data.as_tiled_map, formatted_path);
             break;
         case ASSET_SCRIPT:
-            sprintf_s(formatted_path, 256, "assets/%s.lua", name);
+            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.lua", name);
             Script_LoadFromLua(&pair->asset.data.as_script, formatted_path);
             break;
         case ASSET_SCENE:
             // This asset is FANCY (read: painful) and needs the asset manager itself!!!
             // Yippee!!!
-            sprintf_s(formatted_path, 256, "assets/%s.json", name);
+            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.json", name);
             Scene_LoadFromJson(&pair->asset.data.as_scene, assets, window, state, formatted_path);
             break;
+        case ASSET_ACTOR_SPEC:
+            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.json", name);
+            ActorSpec_LoadFromJSON(&pair->asset.data.as_actor_spec, formatted_path);
+            break;
         default:
-            printf("Unsupported asset type %d...\n", type);
+            printf("ASSET LOAD: Unsupported asset type number %d...\n", type);
             break;
     }
 
@@ -120,6 +124,9 @@ const char* Assets_GetTypeName(gg_asset_type_e type) {
 
         case ASSET_TILED_MAP:
             return "Tiled Map";
+
+        case ASSET_ACTOR_SPEC:
+            return "Actor Spec";
 
         default:
             return "Hello";

@@ -6,6 +6,7 @@
 #include "parson/parson.h"
 
 #include "actor.h"
+#include "actorspec.h"
 #include "assets.h"
 #include "log.h"
 #include "state.h"
@@ -43,12 +44,12 @@ void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
     Scene_Create(scene, window, state);
 
     // Load JSON
-    JSON_Value* root = json_parse_file_with_comments(path);
-    if (root == NULL) {
+    JSON_Value* json_root = json_parse_file_with_comments(path);
+    if (json_root == NULL) {
         Log_Err(Log_TextFormat("SCENE JSON: Failed to load JSON from %s", path));
         return;
     }
-    JSON_Object* root_obj = json_object(root);
+    JSON_Object* root_obj = json_object(json_root);
 
     // Scene Name
     if (json_object_dothas_value_of_type(root_obj, "name", JSONString)) {
@@ -76,7 +77,7 @@ void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
     }
 }
 
-uint32_t Scene_GetNewAndActivate(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_script_t* script) {
+uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_script_t* script) {
     for (uint32_t actor_id = 0; actor_id < SCENE_MAX_ACTORS; actor_id++) {
         gg_actor_t* actor = &scene->actors[actor_id];
 
@@ -92,7 +93,9 @@ uint32_t Scene_GetNewAndActivate(gg_scene_t* scene, gg_assets_t* assets, gg_wind
 
             if (script != NULL) {
                 actor->script_handle = Scripting_LoadScript(&scene->scripting, script);
-                Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state, window, assets);
+                // TODO: Set these as predefined globals for the script
+                Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state, window,
+                                                           assets);
             }
 
             return actor_id;
@@ -100,6 +103,24 @@ uint32_t Scene_GetNewAndActivate(gg_scene_t* scene, gg_assets_t* assets, gg_wind
     }
 
     return ACTOR_INVALID;
+}
+
+uint32_t Scene_NewActorFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window,
+                                    gg_actor_spec_t* spec) {
+    gg_script_t* script;
+    gg_asset_t* script_asset;
+    bool valid = Assets_Get(assets, &script_asset, spec->script_asset_name);
+    if (valid) {
+        script = &script_asset->data.as_script;
+    } else {
+        Log_Err(Log_TextFormat("ACTOR SPEC: Couldn't load script asset %s", spec->script_asset_name));
+    }
+
+    // Create the actor
+    uint32_t new_actor_id = Scene_NewActor(scene, assets, window, script);
+    gg_actor_t* new_actor = Scene_GetActorByID(scene, new_actor_id);
+
+    return new_actor_id;
 }
 
 void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_assets_t* assets,
@@ -114,11 +135,10 @@ void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_
     bool valid = Assets_Get(assets, &asset, SCENE_MAP_RENDERER_SCRIPT);
     if (valid) {
         gg_script_t* script = &asset->data.as_script;
-        uint32_t id = Scene_GetNewAndActivate(scene, assets, window, script);
+        uint32_t id = Scene_NewActor(scene, assets, window, script);
         gg_actor_t* actor = Scene_GetActorByID(scene, id);
 
-        Actor_CallScriptFunctionWithPointer(actor, &scene->scripting, SCENE_MAP_RENDERER_SETUP_NAME,
-                                                   tmap);
+        Actor_CallScriptFunctionWithPointer(actor, &scene->scripting, SCENE_MAP_RENDERER_SETUP_NAME, tmap);
 
         TextCopy(actor->name, "map renderer");
     }
@@ -135,7 +155,7 @@ void Scene_CreateObjectsFromTiledMap(gg_scene_t* scene, gg_window_t* window, gg_
             }
         }
 
-        uint32_t id = Scene_GetNewAndActivate(scene, assets, window, script);
+        uint32_t id = Scene_NewActor(scene, assets, window, script);
         gg_actor_t* actor = Scene_GetActorByID(scene, id);
 
         actor->transform.pos.x = (float)object->x;

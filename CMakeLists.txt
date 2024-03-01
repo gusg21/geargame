@@ -29,6 +29,7 @@ target_link_libraries(${PROJECT_NAME} gglib)
 
 # Copy Assets
 if (APPLE)
+    file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/assets)
     add_custom_target(copy_assets 
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
     )
@@ -36,6 +37,7 @@ if (APPLE)
 endif()
 
 if (WIN32)
+    file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/Debug/assets)
     add_custom_target(copy_assets 
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/Debug/assets
     )
