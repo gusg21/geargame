@@ -8,6 +8,8 @@ The code is (currently) poorly documented although it should be fairly structura
 
 ## TODOS
 
+- Cleanup!
+    - So many `malloc()`s and nowhere near enough `free()`s
 - SDL2 migration/support
     - Ideally you could switch out the backend; most of the rendering code is generic.
 - Documentation pass

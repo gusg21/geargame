@@ -7,6 +7,9 @@ set(SOURCE_FILES
     editor/asseteditor.c
     editor/codeeditor.c
     editor/editor.c
+    editor/ggwidgets.c
+    editor/luaconsole.c
+    editor/outputconsole.c
 
     actor.c
     actorspec.c

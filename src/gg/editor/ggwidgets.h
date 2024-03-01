@@ -1,74 +1,33 @@
-#include "../actor.h"
-#include "../state.h"
-#include "editor.h"
+#if !defined(GG_WIDGETS_H)
+#define GG_WIDGETS_H
 
-static void GGWidgets_Header(gg_editor_t* editor, ImVec4 color, const char* text) {
-    // float width = igGetWindowWidth();
-    // ImVec2 size = {0};
-    // igCalcTextSize(&size, text, NULL, false, 1000.f);
+#include <stdio.h>
+#include <stdlib.h>
 
-    // igSetCursorPosX((width - size.x) / 2.f);
-    // igTextColored(color, text);
+#include "../color.h"
+#include "../cimgui_impl_raylib.h"
 
-    ImGuiStyle* style = igGetStyle();
-    ImVec4 old_color = style->Colors[ImGuiCol_Text];
-    style->Colors[ImGuiCol_Text] = color;
-    igSeparatorText(text);
-    style->Colors[ImGuiCol_Text] = old_color;
+#define WIDGETS_CONSOLE_MAX_LINE_LEN 512
 
-    igSeparator();
-}
+typedef struct gg_actor gg_actor_t;
+typedef struct gg_state gg_state_t;
+typedef struct gg_assets gg_assets_t;
+typedef struct gg_window gg_window_t;
 
-static void GGWidgets_Actor(gg_editor_t* editor, gg_actor_t* actor, uint32_t actor_id, char** script_names,
-                            gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
-    // Quick info
-    igText("ID# %d Alive: %d", actor->actor_id, actor->alive);
+typedef struct gg_console {
+    size_t line_count;
+    char** lines;
+    gg_color_t* line_colors;
+} gg_console_t;
 
-    igSeparator();
+void GGWidgets_Console_Create(gg_console_t* console, size_t line_count);
+void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text, gg_color_t color);
+void GGWidgets_Console_AppendLine(gg_console_t* console, const char* text);
+void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input);
 
-    // Script choosing
-    gg_scripting_t* script = &state->current_scene->scripting;
-    igPushID_Int(actor_id << 8);
-    if (igBeginCombo("Script", "Choose a script", 0)) {
-        for (uint32_t i = 0; i < 64; i++) {
-            if (script_names[i] == NULL) {
-                break;
-            }
+void GGWidgets_Header(ImVec4 color, const char* text);
+void GGWidgets_ToggleButton(const char* label, bool* value);
+void GGWidgets_Actor(gg_actor_t* actor, uint32_t actor_id, char** script_names, gg_state_t* state, gg_assets_t* assets,
+                     gg_window_t* window);
 
-            if (igButton2(script_names[i])) {
-                gg_asset_t* asset = NULL;
-                bool valid = Assets_Get(assets, &asset, script_names[i]);
-                if (valid) {
-                    Scripting_ReloadScript(script, &asset->data.as_script, actor->script_handle);
-                    Scripting_SetPointerBouquet(script, actor->script_handle, actor, state, window, assets);
-                    Scripting_Call(script, "ready", actor->script_handle);
-                }
-            }
-        }
-
-        igEndCombo();
-    }
-    igPopID();
-    igText("Handle# %d", actor->script_handle);
-    igSameLine2();
-    if (igButton2("Copy Handle String")) {
-        char handle_str[16] = {0};
-        Scripting_GetHandleString(script, handle_str, 15, actor->script_handle);
-        SetClipboardText(handle_str);
-    }
-    igSameLine2();
-    if (igButton2("Ready")) {
-        Scripting_Call(script, "ready", actor->script_handle);
-    }
-    igSeparator();
-
-    // Transform
-    igInputFloat2_s("Position", (float*)&actor->transform.pos);
-    igInputFloat2_s("Scale", (float*)&actor->transform.scale);
-    igInputFloat_s("Rotation", &actor->transform.rot);
-    igSeparator();
-
-    // Misc
-    igInputText2("Name", actor->name, 31);
-    igCheckbox("Visible", &actor->visible);
-}
+#endif  // GG_WIDGETS_H

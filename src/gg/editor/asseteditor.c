@@ -53,13 +53,13 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_editor_t* edi
 
 void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets,
                     gg_window_t* window) {
-    igBegin("Assets Viewer", &editor->is_assets_viewer_open, 0);
+    igBegin("Assets Viewer", &asset_editor->open, 0);
     {
-        GGWidgets_Header(editor, (ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, "Assets Viewer");
+        GGWidgets_Header((ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, "Assets Viewer");
 
         if (igBeginPopup("Create New Asset Popup", ImGuiWindowFlags_NoDecoration)) {
             if (igBeginPopup("Create New Actor Spec Popup", ImGuiWindowFlags_NoDecoration)) {
-                GGWidgets_Header(editor, (ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, "New Actor Spec");
+                GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, "New Actor Spec");
 
                 igInputText2("Asset Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
