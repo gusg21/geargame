@@ -36,3 +36,7 @@ void CodeEditor_SaveScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* 
     asset_pair->asset.data.as_script.text = code;
     asset_pair->asset.data.as_script.ok = true;
 }
+
+void CodeEditor_Destroy(gg_code_editor_t* code_editor) {
+    TextEditor_destroy(&code_editor->text_editor);
+}

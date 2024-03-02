@@ -11,3 +11,7 @@ void Keys_Update(gg_keys_t* keys) {
 }
 
 bool Keys_KeyDown(gg_keys_t* keys, gg_key_e key) { return IsKeyDown(key); }
+
+void Keys_Destroy(gg_keys_t* keys) {
+    // I'm a fraud
+}

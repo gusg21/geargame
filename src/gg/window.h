@@ -28,7 +28,7 @@ typedef struct gg_window {
 void Window_CreateWindowed(gg_window_t* window, const char* title, uint32_t width, uint32_t height);
 void Window_CreateFullscreen(gg_window_t* window, const char* title);
 void Window_SetFullscreen(gg_window_t* window, bool fullscreen);
-void Window_Close(gg_window_t* window);
+void Window_Destroy(gg_window_t* window);
 
 // Getters
 uint32_t Window_GetWidth(gg_window_t* window);

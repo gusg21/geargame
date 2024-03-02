@@ -1,7 +1,6 @@
 #if !defined(GG_OUTPUT_CONSOLE_T)
 #define GG_OUTPUT_CONSOLE_T
 
-
 #include <stdbool.h>
 
 #include "../color.h"
@@ -22,5 +21,6 @@ typedef struct gg_output_console {
 void OutputConsole_Create(gg_output_console_t* console);
 void OutputConsole_ExecuteCommand(gg_output_console_t* console, const char* command);
 void OutputConsole_Do(gg_output_console_t* console);
+void OutputConsole_Destroy(gg_output_console_t* console);
 
 #endif  // GG_OUTPUT_CONSOLE_T

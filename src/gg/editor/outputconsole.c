@@ -85,3 +85,7 @@ void OutputConsole_Do(gg_output_console_t* console) {
     }
     igEnd();
 }
+
+void OutputConsole_Destroy(gg_output_console_t* console) {
+    GGWidgets_Console_Destroy(&console->console);
+}

@@ -115,4 +115,11 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     if (editor->is_demo_window_visible) igShowDemoWindow(&editor->is_demo_window_open);
 }
 
+void Editor_Destroy(gg_editor_t* editor) {
+    CodeEditor_Destroy(&editor->code_editor);
+    AssetEditor_Destroy(&editor->asset_editor);
+    LuaConsole_Destroy(&editor->lua_console);
+    OutputConsole_Destroy(&editor->output_console);
+}
+
 #endif  // GG_EDITOR

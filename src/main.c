@@ -34,5 +34,10 @@ int main() {
     // Loop
     State_DoLoop(&state, &assets, &window);
 
+    // Cleanup
+    State_Destroy(&state);
+    Assets_Destroy(&assets);
+    Window_Destroy(&window);
+
     return 0;
 }

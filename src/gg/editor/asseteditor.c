@@ -111,3 +111,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
     }
     igEnd();
 }
+
+void AssetEditor_Destroy(gg_asset_editor_t* asset_editor) {
+    // Don't need to clean up anything
+}

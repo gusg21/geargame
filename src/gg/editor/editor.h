@@ -38,8 +38,12 @@ typedef struct gg_editor {
     
 } gg_editor_t;
 
+// Create the Geargame Editor. Needs the scripting context to set up the Lua Console print hooks
 void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting);
+// Update + draw the editor using IMGUI.
 void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window);
+// Clean up the editor
+void Editor_Destroy(gg_editor_t* editor);
 
 #endif // GG_EDITOR_H
 

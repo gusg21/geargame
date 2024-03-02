@@ -3350,6 +3350,7 @@ CIMGUI_API void TextEditor_render(ImTextEditor* ied);
 CIMGUI_API void TextEditor_setText(ImTextEditor* ied, const char* text);
 CIMGUI_API size_t TextEditor_getTextLength(ImTextEditor* ied);
 CIMGUI_API char* TextEditor_getText(ImTextEditor* ied);
+CIMGUI_API void TextEditor_destroy(ImTextEditor* ied);
 
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void);
 CIMGUI_API void ImVec2_destroy(ImVec2* self);

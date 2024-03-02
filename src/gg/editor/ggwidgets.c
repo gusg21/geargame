@@ -57,6 +57,11 @@ void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
     igEndChild();
 }
 
+void GGWidgets_Console_Destroy(gg_console_t* console) {
+    free(console->lines);
+    free(console->line_colors);
+}
+
 void GGWidgets_Header(ImVec4 color, const char* text) {
     // float width = igGetWindowWidth();
     // ImVec2 size = {0};

@@ -59,3 +59,7 @@ int LuaConsole_LuaPrint(lua_State* L) {
 
     return 0;
 }
+
+void LuaConsole_Destroy(gg_lua_console_t* console) {
+    GGWidgets_Console_Destroy(&console->console);
+}

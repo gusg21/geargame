@@ -20,7 +20,7 @@ void Window_CreateWindowed(gg_window_t* window, const char* title, uint32_t widt
 
     // Run as fast as we can!
     // TODO: Add configuration for this
-    SetTargetFPS(10000);
+    SetTargetFPS(INT32_MAX);
 }
 
 void Window_CreateFullscreen(gg_window_t* window, const char* title) {
@@ -42,6 +42,10 @@ void Window_SetFullscreen(gg_window_t* window, bool fullscreen) {
     }
 
     window->fullscreen = fullscreen;
+}
+
+void Window_Destroy(gg_window_t* window) { 
+    CloseWindow();
 }
 
 uint32_t Window_GetWidth(gg_window_t* window) { return GetScreenWidth(); }

@@ -27,5 +27,6 @@ void LuaConsole_Create(gg_lua_console_t* lua_console, gg_scripting_t* scripting)
 void LuaConsole_ExecuteLuaLine(gg_lua_console_t* console, gg_scripting_t* script, const char* line);
 void LuaConsole_Do(gg_lua_console_t* console, gg_scripting_t* scripting);
 int LuaConsole_LuaPrint(lua_State* L);
+void LuaConsole_Destroy(gg_lua_console_t* console);
 
 #endif  // GG_LUA_CONSOLE_T

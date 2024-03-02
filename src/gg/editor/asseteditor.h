@@ -22,5 +22,6 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_editor_t* edi
                                gg_asset_pair_t* pair);
 void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets,
                     gg_window_t* window);
+void AssetEditor_Destroy(gg_asset_editor_t* asset_editor);
 
 #endif  // GG_ASSET_EDITOR_H

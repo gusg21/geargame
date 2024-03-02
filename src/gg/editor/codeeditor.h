@@ -20,5 +20,6 @@ void CodeEditor_Create(gg_code_editor_t* code_editor);
 void CodeEditor_Do(gg_code_editor_t* code_editor);
 void CodeEditor_EditScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* asset_pair);
 void CodeEditor_SaveScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* asset_pair);
+void CodeEditor_Destroy(gg_code_editor_t* code_editor);
 
 #endif  // GG_CODE_EDITOR_H

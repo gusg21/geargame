@@ -129,5 +129,6 @@ typedef struct gg_keys {
 void Keys_Create(gg_keys_t* keys);
 void Keys_Update(gg_keys_t* keys);
 bool Keys_KeyDown(gg_keys_t* keys, gg_key_e key);
+void Keys_Destroy(gg_keys_t* keys);
 
 #endif // GG_KEYS_H

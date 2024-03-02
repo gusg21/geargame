@@ -120,4 +120,10 @@ void State_Quit(gg_state_t* state) {
     state->wants_exit = true;
 }
 
-void State_Destroy(gg_state_t* state) {}
+void State_Destroy(gg_state_t* state) {
+    // NOTE: Don't need to kill the scene; we only have a pointer to a gg_scene_t managed by the assets
+    Keys_Destroy(&state->keys);
+#ifdef GG_EDITOR
+    Editor_Destroy(&state->editor);
+#endif
+}

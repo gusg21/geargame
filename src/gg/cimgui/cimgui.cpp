@@ -51,6 +51,10 @@ CIMGUI_API char* TextEditor_getText(ImTextEditor* ied) {
     return (char*)text;
 }
 
+CIMGUI_API void TextEditor_destroy(ImTextEditor* ied) {
+    // TODO: Something funky happening when you delete the TextEditor object. Not sure what's up
+    //delete ((TextEditor*)ied->edit);
+}
 
 CIMGUI_API ImVec2* ImVec2_ImVec2_Nil(void)
 {
