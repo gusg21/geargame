@@ -1173,7 +1173,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if !defined(CUTE_TILED_FOPEN)
 #include <stdio.h>  // fopen
-#define CUTE_TILED_FOPEN fopen
+#define CUTE_TILED_FOPEN fopen_s
 #endif
 
 #if !defined(CUTE_TILED_FSEEK)
@@ -1282,7 +1282,8 @@ CUTE_TILED_U64 cute_tiled_FNV1a(const void* buf, int len) {
 
 static char* cute_tiled_read_file_to_memory_and_null_terminate(const char* path, int* size, void* mem_ctx) {
     char* data = 0;
-    CUTE_TILED_FILE* fp = CUTE_TILED_FOPEN(path, "rb");
+    CUTE_TILED_FILE* fp;
+    CUTE_TILED_FOPEN(&fp, path, "rb");
     int sz = 0;
     CUTE_TILED_UNUSED(mem_ctx);
 

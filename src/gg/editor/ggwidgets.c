@@ -5,10 +5,14 @@
 #include "../utils.h"
 #include "editor.h"
 
+int32_t g_next_console_id = 1719;
+
 void GGWidgets_Console_Create(gg_console_t* console, size_t line_count) {
     console->lines = calloc(line_count, sizeof(char*));
     console->line_colors = calloc(line_count, sizeof(gg_color_t));
     console->line_count = line_count;
+    console->has_new_line = false;
+    console->my_id = g_next_console_id++;
 }
 
 void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text, gg_color_t color) {
@@ -24,6 +28,9 @@ void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text
 
     console->lines[0] = new_line;
     console->line_colors[0] = color;
+
+    // TODO: figure out why the output console doesn't snap to bottom but the Lua console does?
+    console->has_new_line = true;
 }
 
 void GGWidgets_Console_AppendLine(gg_console_t* console, const char* text) {
@@ -31,8 +38,8 @@ void GGWidgets_Console_AppendLine(gg_console_t* console, const char* text) {
 }
 
 void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
-    igBeginChild_ID(1791, (ImVec2){0, space_for_input ? -30 : 0}, ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_HorizontalScrollbar);
-    for (int32_t i = console->line_count - 1; i >= 0; i--) {
+    igBeginChild_ID(console->my_id, (ImVec2){0, space_for_input ? -30.f : 0.f}, ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_HorizontalScrollbar);
+    for (int32_t i = (int32_t)(console->line_count - 1); i >= 0; i--) {
         if (console->lines[i] != NULL) {
             igTextColored((ImVec4){console->line_colors[i].r / 255.f, console->line_colors[i].g / 255.f,
                                    console->line_colors[i].b / 255.f, console->line_colors[i].a / 255.f},
@@ -41,6 +48,12 @@ void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
             igText("");
         }
     }
+
+    if (console->has_new_line) {
+        console->has_new_line = false;
+        igSetScrollHereY(1.0f);
+    }
+
     igEndChild();
 }
 

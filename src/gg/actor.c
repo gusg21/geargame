@@ -25,6 +25,8 @@ void Actor_ResetActor(gg_actor_t* actor) {
 };
 
 // TODO: This is the worst naming convention ever. Absolute affront to god
+// TODO(2): Not sure what the better alternative here is. Perhaps definining every function you'd want to call on an
+// actor? You would still need these functions to call arbitrary code though. This might just be a C issue.
 
 void Actor_CallScriptFunction(gg_actor_t* actor, gg_scripting_t* scripting, const char* func_name) {
     if (actor->script_handle != SCRIPTING_BAD_HANDLE) {

@@ -13,7 +13,7 @@
 // about the window if they just want to put something on screen.
 
 typedef struct gg_window {
-    bool initialized;  // TODO: probably just remove lol
+    bool initialized;
     bool fullscreen;
     uint32_t width, height;
     // NOTE: you would probably want to include a handle to the window

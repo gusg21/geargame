@@ -18,6 +18,8 @@ typedef struct gg_console {
     size_t line_count;
     char** lines;
     gg_color_t* line_colors;
+    bool has_new_line;
+    uint32_t my_id;
 } gg_console_t;
 
 void GGWidgets_Console_Create(gg_console_t* console, size_t line_count);

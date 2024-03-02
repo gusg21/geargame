@@ -403,10 +403,10 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
                 pcmd->UserCallback(cmd_list, pcmd);
             } else {
                 ImVec2 pos = draw_data->DisplayPos;
-                int rectX = (int)(pcmd->ClipRect.x - pos.x);
-                int rectY = (int)(pcmd->ClipRect.y - pos.y);
-                int rectW = (int)(pcmd->ClipRect.z - rectX);
-                int rectH = (int)(pcmd->ClipRect.w - rectY);
+                float rectX = pcmd->ClipRect.x - pos.x;
+                float rectY = pcmd->ClipRect.y - pos.y;
+                float rectW = pcmd->ClipRect.z - rectX;
+                float rectH = pcmd->ClipRect.w - rectY;
                 EnableScissor(rectX, rectY, rectW, rectH);
                 {
                     if (pcmd->TextureId != NULL) {

@@ -12,7 +12,6 @@
 
 static gg_editor_t* g_editor;
 
-
 void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
     g_editor = editor;
 
@@ -23,10 +22,6 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
 
     editor->is_scene_viewer_visible = true;
     editor->is_assets_viewer_visible = true;
-    
-
-    // TODO: Move to a "console" window (NOT the lua console silly!)
-    //SetTraceLogCallback(Editor_S_TraceLogCallback);
 }
 
 static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {

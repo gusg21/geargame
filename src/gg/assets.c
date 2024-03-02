@@ -103,8 +103,6 @@ gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, con
     }
 
     // Append to linked list
-    // TODO: Might be broken???? I was working on it when it broke (2/16/24) and
-    // it started working suddenly. not sure what's up, good luck soldier
     gg_asset_pair_t* last_pair = assets->asset_list;
     while (last_pair->next != NULL) {
         last_pair = last_pair->next;
@@ -156,4 +154,5 @@ void Assets_FindAssetsByType(gg_assets_t* assets, char** string_list, gg_asset_t
 
 void Assets_Destroy(gg_assets_t* assets) {
     // TODO: Cleanup
+    // TODO(2): Please Gus add the cleanup code :pray: :pray: :pray:
 }

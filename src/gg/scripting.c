@@ -14,7 +14,8 @@
 void Script_LoadFromLua(gg_script_t* code, const char* path) {
     code->text = (char*)calloc(sizeof(char), SCRIPT_MAX_LENGTH);
 
-    FILE* code_file = fopen(path, "r");
+    FILE* code_file;
+    fopen_s(&code_file, path, "r");
     if (code_file == NULL) {
         Log_Err(Log_TextFormat("SCRIPT LOAD: Error opening script from %s", path));
         code->ok = false;

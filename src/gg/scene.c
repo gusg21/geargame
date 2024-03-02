@@ -209,7 +209,6 @@ void Scene_Update(gg_scene_t* scene, float delta) {
         }
     }
 
-    // TODO: Better way/place to GC?
     Scripting_DoGarbageCollection(&scene->scripting);
 }
 
