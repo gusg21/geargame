@@ -43,6 +43,7 @@ int main() {
 
     // Show any un-cleaned-up allocations
     Memory_PrintAllocations();
+    Memory_CleanUpAllocationList();
 
     return 0;
 }
