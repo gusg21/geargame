@@ -27,6 +27,7 @@ typedef struct gg_script {
 } gg_script_t;
 
 void Script_LoadFromLua(gg_script_t* code, const char* path);
+void Script_Destroy(gg_script_t* code);
 
 void Scripting_Initialize(gg_scripting_t* script, bool use_auto_gc);
 uint32_t Scripting_LoadScript(gg_scripting_t* script, gg_script_t* code);
@@ -45,4 +46,6 @@ void Scripting_CallWithPointerBouquet(gg_scripting_t* script, const char* func_n
                                       gg_state_t* state, gg_window_t* window, gg_assets_t* assets);
 void Scripting_SetPointerBouquet(gg_scripting_t* script, uint32_t handle, gg_actor_t* actor, gg_state_t* state,
                                  gg_window_t* window, gg_assets_t* assets);
+void Scripting_Destroy(gg_scripting_t* script);
+
 #endif  // GG_SCRIPTING_H

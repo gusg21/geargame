@@ -9,13 +9,18 @@
 #include "lua54/lauxlib.h"
 #include "lua54/lualib.h"
 
+#include "memory.h"
 #include "utils.h"
 
 void Script_LoadFromLua(gg_script_t* code, const char* path) {
-    code->text = (char*)calloc(sizeof(char), SCRIPT_MAX_LENGTH);
+    code->text = (char*)GG_CALLOC(sizeof(char), SCRIPT_MAX_LENGTH);
 
     FILE* code_file;
+#if APPLE
+    code_file = fopen(path, "r");
+#else
     fopen_s(&code_file, path, "r");
+#endif
     if (code_file == NULL) {
         Log_Err(Log_TextFormat("SCRIPT LOAD: Error opening script from %s", path));
         code->ok = false;
@@ -32,6 +37,10 @@ void Script_LoadFromLua(gg_script_t* code, const char* path) {
 
     fclose(code_file);
     code->ok = true;
+}
+
+void Script_Destroy(gg_script_t* code) {
+    GG_FREE(code->text);
 }
 
 void Scripting_Initialize(gg_scripting_t* script, bool use_auto_gc) {
@@ -107,7 +116,7 @@ void Scripting_Call(gg_scripting_t* script, const char* func_name, uint32_t hand
         if (lua_pcall(script->state, 1, 0, 0) != LUA_OK) {  // [table]
             char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
             Log_Err(err_text);
-            free(err_text);
+            GG_FREE(err_text);
         }
     } else {
         // printf("nil func_name %s\n", func_name);
@@ -129,7 +138,7 @@ void Scripting_CallWithFloat(gg_scripting_t* script, const char* func_name, uint
         if (lua_pcall(script->state, 2, 0, 0) != LUA_OK) {  // [table]
             char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
             Log_Err(err_text);
-            free(err_text);
+            GG_FREE(err_text);
         }
     } else {
         // printf("nil func_name %s\n", func_name);
@@ -151,7 +160,7 @@ void Scripting_CallWithPointer(gg_scripting_t* script, const char* func_name, ui
         if (lua_pcall(script->state, 2, 0, 0) != LUA_OK) {  // [table]
             char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
             Log_Err(err_text);
-            free(err_text);
+            GG_FREE(err_text);
         }
     } else {
         // printf("nil func_name %s\n", func_name);
@@ -175,7 +184,7 @@ void Scripting_CallWithTwoPointers(gg_scripting_t* script, const char* func_name
         if (lua_pcall(script->state, 3, 0, 0) != LUA_OK) {  // [table]
             char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
             Log_Err(err_text);
-            free(err_text);
+            GG_FREE(err_text);
         }
     } else {
         // printf("nil func_name %s\n", func_name);
@@ -201,7 +210,7 @@ void Scripting_CallWithPointerBouquet(gg_scripting_t* script, const char* func_n
         if (lua_pcall(script->state, 5, 0, 0) != LUA_OK) {  // [table]
             char* err_text = Log_TextFormat("ERROR (func %s): %s\n", func_name, lua_tostring(script->state, -1));
             Log_Err(err_text);
-            free(err_text);
+            GG_FREE(err_text);
         }
     } else {
         // printf("nil func_name %s\n", func_name);
@@ -234,4 +243,10 @@ void Scripting_SetPointerBouquet(gg_scripting_t* script, uint32_t handle, gg_act
     // }
 
     lua_settop(script->state, 0);  // Empty the stack
+}
+
+void Scripting_Destroy(gg_scripting_t* script) {
+    script->next_handle = 1;
+    lua_close(script->state);
+    script->state = NULL;
 }

@@ -33,7 +33,7 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
         GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, "Scene Actors");
 
         const uint32_t max_script_names = 64;
-        char** script_names = calloc(max_script_names, sizeof(char*));
+        char* script_names[max_script_names] = {0};
         Assets_FindAssetsByType(assets, script_names, ASSET_SCRIPT);
 
         // For each actor
@@ -54,8 +54,6 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
                 igSpacing();
             }
         }
-
-        free(script_names);
     }
     igEnd();
 }

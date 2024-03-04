@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "memory.h"
 #include "utils.h"
 
 void Assets_Create(gg_assets_t* assets) { assets->asset_list = NULL; }
@@ -89,9 +90,9 @@ bool Assets_Get(gg_assets_t* assets, gg_asset_t** asset_ptr, const char* name) {
 }
 
 gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, const char* name) {
-    gg_asset_pair_t* pair = (gg_asset_pair_t*)calloc(1, sizeof(gg_asset_pair_t));
+    gg_asset_pair_t* pair = (gg_asset_pair_t*)GG_CALLOC(1, sizeof(gg_asset_pair_t));
 
-    pair->name = (char*)calloc(256, sizeof(char));
+    pair->name = (char*)GG_CALLOC(256, sizeof(char));
     TextCopy(pair->name, name);
     pair->asset.type = type;
     pair->next = NULL;
@@ -165,23 +166,27 @@ void Assets_Destroy(gg_assets_t* assets) {
 
 void Assets_DestroyPair(gg_assets_t* assets, gg_asset_pair_t* pair) {
     switch (pair->asset.type) {
-        // case ASSET_ACTOR_SPEC:
-        //     break;
-        // case ASSET_SCENE:
-        //     break;
-        // case ASSET_SCRIPT:
-        //     break;
-        // case ASSET_TEXTURE:
-        //     break;
-        // case ASSET_TILED_MAP:
-        //     break;
+        case ASSET_ACTOR_SPEC:
+            break;
+        case ASSET_SCENE:
+            Scene_Destroy(&pair->asset.data.as_scene);
+            break;
+        case ASSET_SCRIPT:
+            Script_Destroy(&pair->asset.data.as_script);
+            break;
+        case ASSET_TEXTURE:
+            Texture_Destroy(&pair->asset.data.as_tex);
+            break;
+        case ASSET_TILED_MAP:
+            TiledMap_Destroy(&pair->asset.data.as_tiled_map);
+            break;
         default:
             Log_Err(Log_TextFormat("ASSETS: Unable to destroy type %s", Assets_GetTypeName(pair->asset.type)));
             break;
     }
 
-    free(pair->name);
+    GG_FREE(pair->name);
     pair->name = NULL;
-    free(pair);
+    GG_FREE(pair);
     pair = NULL;
 }

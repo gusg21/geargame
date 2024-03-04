@@ -1,6 +1,7 @@
 #include "codeeditor.h"
 
 #include "../assets.h"
+#include "../memory.h"
 
 void CodeEditor_Create(gg_code_editor_t* code_editor) { TextEditor_create(&code_editor->text_editor); }
 
@@ -30,7 +31,7 @@ void CodeEditor_EditScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* 
 }
 
 void CodeEditor_SaveScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* asset_pair) {
-    if (asset_pair->asset.data.as_script.text != NULL) free(asset_pair->asset.data.as_script.text);
+    if (asset_pair->asset.data.as_script.text != NULL) GG_FREE(asset_pair->asset.data.as_script.text);
 
     char* code = TextEditor_getText(&code_editor->text_editor);  // Managed by us now
     asset_pair->asset.data.as_script.text = code;

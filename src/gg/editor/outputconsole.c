@@ -9,9 +9,11 @@
 
 gg_output_console_t* g_output_console = NULL;
 
+
 static void OutputConsole_TraceLogCallback(int logLevel, const char* text, va_list args) {
     char line[WIDGETS_CONSOLE_MAX_LINE_LEN] = {0};
 
+#ifndef APPLE
     // Construct the time and date info
     char timeStr[64] = {0};
     time_t now = time(NULL);
@@ -37,6 +39,7 @@ static void OutputConsole_TraceLogCallback(int logLevel, const char* text, va_li
         default:
             break;
     }
+#endif
 
     // Print the actual info
     vprintf_s(text, args);
@@ -88,4 +91,5 @@ void OutputConsole_Do(gg_output_console_t* console) {
 
 void OutputConsole_Destroy(gg_output_console_t* console) {
     GGWidgets_Console_Destroy(&console->console);
+    SetTraceLogCallback(NULL);
 }

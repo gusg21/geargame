@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "memory.h"
 #include "tileset.h"
 
 #include <stdlib.h>
@@ -10,7 +11,7 @@
 void Grid_Create(gg_grid_t* grid, uint32_t width, uint32_t height) {
     grid->width = width;
     grid->height = height;
-    grid->data = calloc(width * height, sizeof(uint32_t));
+    grid->data = GG_CALLOC(width * height, sizeof(uint32_t));
 }
 
 void Grid_Draw(gg_grid_t* grid, gg_window_t* window, gg_tileset_t* tileset, int32_t x, int32_t y) {
@@ -23,5 +24,5 @@ void Grid_Draw(gg_grid_t* grid, gg_window_t* window, gg_tileset_t* tileset, int3
     }
 }
 
-void Grid_Destroy(gg_grid_t* grid) { free(grid->data);
+void Grid_Destroy(gg_grid_t* grid) { GG_FREE(grid->data);
 grid->data = NULL; }

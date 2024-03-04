@@ -11,5 +11,6 @@ typedef struct gg_camera {
 } gg_camera_t;
 
 void Camera_Create(gg_camera_t* camera, uint32_t window_w, uint32_t window_h, float x, float y);
+void Camera_Destroy(gg_camera_t* camera);
 
 #endif  // GG_CAMERA_H

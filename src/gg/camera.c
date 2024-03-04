@@ -8,3 +8,7 @@ void Camera_Create(gg_camera_t* camera, uint32_t window_w, uint32_t window_h, fl
     camera->offset_y = window_h / 2.f;
     camera->zoom = 1.f;
 }
+
+void Camera_Destroy(gg_camera_t* camera) {
+    // I'm a fraud
+}

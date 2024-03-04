@@ -26,7 +26,7 @@ typedef struct gg_window gg_window_t;
 typedef struct gg_scene {
     char* name;  // The name of the scene
 
-    gg_actor_t* actors;     // The linked list head of actors
+    gg_actor_t* actors;     // The block of actors
     uint32_t actors_alive;  // The number of actors currently activated
 
     gg_camera_t camera;        // This scene's camera
@@ -57,5 +57,7 @@ void Scene_Ready(gg_scene_t* scene);
 void Scene_Update(gg_scene_t* scene, float delta);
 // Tell all scripts to put themselves on the screen.
 void Scene_Draw(gg_scene_t* scene, gg_window_t* window);
+// Clean up the scene
+void Scene_Destroy(gg_scene_t* scene);
 
 #endif  // GG_SCENE_H

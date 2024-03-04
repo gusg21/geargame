@@ -6,6 +6,7 @@
 #include "external/cute_tiled.h"
 
 #include "log.h"
+#include "memory.h"
 
 static void TiledMap_S_LoadLayer(gg_tiled_map_t* tmap, cute_tiled_map_t* map, cute_tiled_tileset_t* tileset,
                                  cute_tiled_layer_t* layer, const char* path) {
@@ -30,7 +31,7 @@ static void TiledMap_S_LoadLayer(gg_tiled_map_t* tmap, cute_tiled_map_t* map, cu
         cute_tiled_object_t* tobject = layer->objects;
         gg_tiled_object_t* gobject = tmap->objs;
         while (tobject != NULL) {
-            gobject->name = malloc(sizeof(char) * 256);
+            gobject->name = (char*)GG_CALLOC(256, sizeof(char));
             TextCopy(gobject->name, tobject->name.ptr);
 
             gobject->x = (int32_t)tobject->x;
@@ -40,13 +41,13 @@ static void TiledMap_S_LoadLayer(gg_tiled_map_t* tmap, cute_tiled_map_t* map, cu
             for (uint32_t prop_idx = 0; prop_idx < (uint32_t)tobject->property_count; prop_idx++) {
                 cute_tiled_property_t* prop = &tobject->properties[prop_idx];   
                 if (TextIsEqual(TextToLower(prop->name.ptr), "script")) {
-                    gobject->script_name = calloc(sizeof(char), 128);
+                    gobject->script_name = (char*)GG_CALLOC(128, sizeof(char));
                     TextCopy(gobject->script_name, prop->data.string.ptr);
                 }
             }
 
             if (tobject->next != NULL) {
-                gobject->next = malloc(sizeof(gg_tiled_object_t));
+                gobject->next = (gg_tiled_object_t*)GG_MALLOC(sizeof(gg_tiled_object_t));
             } else {
                 gobject->next = NULL;
             }
@@ -58,7 +59,7 @@ static void TiledMap_S_LoadLayer(gg_tiled_map_t* tmap, cute_tiled_map_t* map, cu
 }
 
 void TiledMap_LoadFromTMJ(gg_tiled_map_t* tmap, const char* path) {
-    tmap->objs = malloc(sizeof(gg_tiled_object_t));
+    tmap->objs = GG_MALLOC(sizeof(gg_tiled_object_t));
 
     cute_tiled_map_t* map = cute_tiled_load_map_from_file(path, NULL);
     cute_tiled_tileset_t* tileset = &map->tilesets[0];
@@ -101,6 +102,15 @@ void TiledMap_DrawCentered(gg_tiled_map_t* tmap, gg_window_t* window, int32_t x,
 void TiledMap_Destroy(gg_tiled_map_t* tmap) {
     Grid_Destroy(&tmap->grid);
     Tileset_Destroy(&tmap->set);
-    // NOTE: No "Texture_Destroy()" because textures are assumed to be lightweight pointers
-    // to full textures allocated elsewhere.
+    Texture_Destroy(&tmap->tex);
+    
+    gg_tiled_object_t* obj = tmap->objs;
+    while (obj != NULL) {
+        gg_tiled_object_t* next = obj->next;
+        GG_FREE(obj->name);
+        GG_FREE(obj->script_name);
+        GG_FREE(obj);
+        obj = next;
+    }
+    tmap->objs = NULL;
 }

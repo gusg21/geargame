@@ -2,6 +2,8 @@
 #include "gg/assets.h"
 #include "gg/state.h"
 
+#include "gg/memory.h"
+
 int main() {
     // Create the window
     gg_window_t window = {0};
@@ -38,6 +40,9 @@ int main() {
     State_Destroy(&state);
     Assets_Destroy(&assets);
     Window_Destroy(&window);
+
+    // Show any un-cleaned-up allocations
+    Memory_PrintAllocations();
 
     return 0;
 }

@@ -20,6 +20,7 @@ set(SOURCE_FILES
     keys.c
     ldefs.c
     log.c
+    memory.c
     scene.c
     scripting.c
     state.c

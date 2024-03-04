@@ -9,17 +9,18 @@
 #include "actorspec.h"
 #include "assets.h"
 #include "log.h"
+#include "memory.h"
 #include "state.h"
 #include "tiled.h"
 #include "utils.h"
 
 void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
     // Name
-    scene->name = (char*)malloc(sizeof(char) * SCENE_DEFAULT_NAME_LEN);
+    scene->name = (char*)GG_CALLOC(SCENE_DEFAULT_NAME_LEN, sizeof(char));
     sprintf_s(scene->name, SCENE_DEFAULT_NAME_LEN, "%s", SCENE_DEFAULT_NAME);
 
     // Actors
-    scene->actors = calloc(SCENE_MAX_ACTORS, sizeof(gg_actor_t));
+    scene->actors = GG_CALLOC(SCENE_MAX_ACTORS, sizeof(gg_actor_t));
     scene->actors_alive = 0;
 
     // Reset Actors
@@ -57,10 +58,11 @@ void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
         size_t scene_name_len = json_object_dotget_string_len(root_obj, "name");
 
         if (scene->name != NULL) {
-            free(scene->name);
+            GG_FREE(scene->name);
             scene->name = NULL;
         }
-        scene->name = calloc(scene_name_len, sizeof(char));
+        
+        scene->name = (char*)GG_CALLOC(scene_name_len, sizeof(char));
         sprintf_s(scene->name, scene_name_len, "%s", scene_name);
     }
 
@@ -220,4 +222,14 @@ void Scene_Draw(gg_scene_t* scene, gg_window_t* window) {
             Actor_CallScriptFunction(actor, &scene->scripting, "draw");
         }
     }
+}
+
+void Scene_Destroy(gg_scene_t* scene) {
+    GG_FREE(scene->name);
+
+    GG_FREE(scene->actors);
+    scene->actors_alive = 0;
+
+    Camera_Destroy(&scene->camera);
+    Scripting_Destroy(&scene->scripting);
 }

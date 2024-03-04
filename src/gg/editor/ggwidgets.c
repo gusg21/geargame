@@ -2,25 +2,30 @@
 
 #include "../actor.h"
 #include "../state.h"
+#include "../memory.h"
 #include "../utils.h"
 #include "editor.h"
 
 int32_t g_next_console_id = 1719;
 
 void GGWidgets_Console_Create(gg_console_t* console, size_t line_count) {
-    console->lines = calloc(line_count, sizeof(char*));
-    console->line_colors = calloc(line_count, sizeof(gg_color_t));
+    console->lines = GG_CALLOC(line_count, sizeof(char*));
+    console->line_colors = GG_CALLOC(line_count, sizeof(gg_color_t));
     console->line_count = line_count;
     console->has_new_line = false;
     console->my_id = g_next_console_id++;
 }
 
 void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text, gg_color_t color) {
-    char* new_line = calloc(WIDGETS_CONSOLE_MAX_LINE_LEN, sizeof(char));
+    char* new_line = GG_CALLOC(WIDGETS_CONSOLE_MAX_LINE_LEN, sizeof(char));
     sprintf_s(new_line, WIDGETS_CONSOLE_MAX_LINE_LEN, "%s", text);
 
-    free(console->lines[console->line_count - 1]);  // Clear the last one
-    console->lines[console->line_count - 1] = NULL;
+    // Clear the last one
+    if (console->lines[console->line_count - 1] != NULL) {
+        GG_FREE(console->lines[console->line_count - 1]);  
+        console->lines[console->line_count - 1] = NULL;
+    }
+    
 
     for (size_t i = console->line_count - 1; i > 0; i--) {
         console->lines[i] = console->lines[i - 1];
@@ -61,17 +66,22 @@ void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
 }
 
 void GGWidgets_Console_Destroy(gg_console_t* console) {
-    // TODO: Breaks? why
-    // free(console->line_colors);
-    if (*console->lines != NULL) {
-        for (size_t line_idx = 0; line_idx < console->line_count; line_idx++) {
-            if (console->lines[line_idx] != NULL) {
-                free(console->lines[line_idx]);
-                console->lines[line_idx] = NULL;
+    if (console->line_colors != NULL) {
+        GG_FREE(console->line_colors);
+        console->line_colors = NULL;
+    }
+
+    if (console->lines != NULL) {
+        if (*console->lines != NULL) {
+            for (size_t line_idx = 0; line_idx < console->line_count; line_idx++) {
+                if (console->lines[line_idx] != NULL) {
+                    GG_FREE(console->lines[line_idx]);
+                    console->lines[line_idx] = NULL;
+                }
             }
         }
     }
-    free(console->lines);
+    GG_FREE(console->lines);
     console->lines = NULL;
 }
 
