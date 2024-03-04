@@ -65,7 +65,6 @@ void _Memory_Free(void* address, int32_t source_line, const char* source_name) {
 
         alloc = alloc->next;
     }
-
 }
 
 void Memory_PrintAllocations() {
@@ -77,4 +76,17 @@ void Memory_PrintAllocations() {
         }
         alloc = alloc->next;
     }
+}
+
+void Memory_CleanUpAllocationList() {
+    gg_mem_alloc_t* alloc = g_mem_alloc_list;
+    while (alloc != NULL) {
+        gg_mem_alloc_t* next = alloc->next;
+        free((void*)alloc->source_name);
+        alloc->source_name = NULL;
+        free(alloc);
+        alloc = next;
+    }
+
+    g_mem_alloc_list = NULL;
 }

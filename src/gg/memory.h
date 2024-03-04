@@ -25,5 +25,6 @@ void* _Memory_Calloc(size_t count, size_t size, int32_t source_line, const char*
 void _Memory_Free(void* address, int32_t source_line, const char* source_name);
 
 void Memory_PrintAllocations();
+void Memory_CleanUpAllocationList();
 
 #endif  // GG_MEMORY_H
