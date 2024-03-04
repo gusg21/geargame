@@ -57,5 +57,6 @@ gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, con
 const char* Assets_GetTypeName(gg_asset_type_e type);
 void Assets_FindAssetsByType(gg_assets_t* assets, char** string_list, gg_asset_type_e type);
 void Assets_Destroy(gg_assets_t* assets);
+void Assets_DestroyPair(gg_assets_t* assets, gg_asset_pair_t* pair);
 
 #endif // GG_ASSETS_H

@@ -58,6 +58,7 @@ void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
 
         if (scene->name != NULL) {
             free(scene->name);
+            scene->name = NULL;
         }
         scene->name = calloc(scene_name_len, sizeof(char));
         sprintf_s(scene->name, scene_name_len, "%s", scene_name);

@@ -155,4 +155,33 @@ void Assets_FindAssetsByType(gg_assets_t* assets, char** string_list, gg_asset_t
 void Assets_Destroy(gg_assets_t* assets) {
     // TODO: Cleanup
     // TODO(2): Please Gus add the cleanup code :pray: :pray: :pray:
+    gg_asset_pair_t* pair = assets->asset_list;
+    while (pair != NULL) {
+        gg_asset_pair_t* next_pair = pair->next;
+        Assets_DestroyPair(assets, pair);
+        pair = next_pair;
+    }
+}
+
+void Assets_DestroyPair(gg_assets_t* assets, gg_asset_pair_t* pair) {
+    switch (pair->asset.type) {
+        // case ASSET_ACTOR_SPEC:
+        //     break;
+        // case ASSET_SCENE:
+        //     break;
+        // case ASSET_SCRIPT:
+        //     break;
+        // case ASSET_TEXTURE:
+        //     break;
+        // case ASSET_TILED_MAP:
+        //     break;
+        default:
+            Log_Err(Log_TextFormat("ASSETS: Unable to destroy type %s", Assets_GetTypeName(pair->asset.type)));
+            break;
+    }
+
+    free(pair->name);
+    pair->name = NULL;
+    free(pair);
+    pair = NULL;
 }

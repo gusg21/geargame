@@ -23,4 +23,5 @@ void Grid_Draw(gg_grid_t* grid, gg_window_t* window, gg_tileset_t* tileset, int3
     }
 }
 
-void Grid_Destroy(gg_grid_t* grid) { free(grid->data); }
+void Grid_Destroy(gg_grid_t* grid) { free(grid->data);
+grid->data = NULL; }

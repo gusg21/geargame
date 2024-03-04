@@ -20,6 +20,7 @@ void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text
     sprintf_s(new_line, WIDGETS_CONSOLE_MAX_LINE_LEN, "%s", text);
 
     free(console->lines[console->line_count - 1]);  // Clear the last one
+    console->lines[console->line_count - 1] = NULL;
 
     for (size_t i = console->line_count - 1; i > 0; i--) {
         console->lines[i] = console->lines[i - 1];
@@ -38,7 +39,9 @@ void GGWidgets_Console_AppendLine(gg_console_t* console, const char* text) {
 }
 
 void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
-    igBeginChild_ID(console->my_id, (ImVec2){0, space_for_input ? -30.f : 0.f}, ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_HorizontalScrollbar);
+    igBeginChild_ID(console->my_id, (ImVec2){0, space_for_input ? -30.f : 0.f},
+                    ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeY,
+                    ImGuiWindowFlags_HorizontalScrollbar);
     for (int32_t i = (int32_t)(console->line_count - 1); i >= 0; i--) {
         if (console->lines[i] != NULL) {
             igTextColored((ImVec4){console->line_colors[i].r / 255.f, console->line_colors[i].g / 255.f,
@@ -58,8 +61,18 @@ void GGWidgets_Console_Do(gg_console_t* console, bool space_for_input) {
 }
 
 void GGWidgets_Console_Destroy(gg_console_t* console) {
+    // TODO: Breaks? why
+    // free(console->line_colors);
+    if (*console->lines != NULL) {
+        for (size_t line_idx = 0; line_idx < console->line_count; line_idx++) {
+            if (console->lines[line_idx] != NULL) {
+                free(console->lines[line_idx]);
+                console->lines[line_idx] = NULL;
+            }
+        }
+    }
     free(console->lines);
-    free(console->line_colors);
+    console->lines = NULL;
 }
 
 void GGWidgets_Header(ImVec4 color, const char* text) {
