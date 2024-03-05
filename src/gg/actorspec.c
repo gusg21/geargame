@@ -22,7 +22,7 @@ void ActorSpec_LoadFromJSON(gg_actor_spec_t* spec, const char* path) {
     // Gather data from the JSON
     if (json_object_dothas_value_of_type(root_object, "script", JSONString)) {
         const char* script_name = json_object_get_string(root_object, "script");
-        memcpy(spec->script_asset_name, script_name, ACTOR_SPEC_MAX_ASSET_NAME_LEN - 1);
+        memcpy(spec->script_asset_name, script_name, ACTOR_SPEC_MAX_SCRIPT_NAME_LEN - 1);
     }
 
     if (json_object_dothas_value_of_type(root_object, "name", JSONString)) {

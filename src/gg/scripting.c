@@ -12,9 +12,15 @@
 #include "memory.h"
 #include "utils.h"
 
-void Script_LoadFromLua(gg_script_t* code, const char* path) {
+void Script_CreateEmpty(gg_script_t* code) {
     code->text = (char*)GG_CALLOC(sizeof(char), SCRIPT_MAX_LENGTH);
+    code->ok = true;
+}
 
+void Script_LoadFromLua(gg_script_t* code, const char* path) {
+    Script_CreateEmpty(code);
+
+    code->ok = false;
     FILE* code_file;
 #if APPLE
     code_file = fopen(path, "r");

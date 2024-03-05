@@ -26,6 +26,7 @@ typedef struct gg_script {
     bool ok;
 } gg_script_t;
 
+void Script_CreateEmpty(gg_script_t* code);
 void Script_LoadFromLua(gg_script_t* code, const char* path);
 void Script_Destroy(gg_script_t* code);
 

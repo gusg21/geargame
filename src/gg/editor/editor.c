@@ -6,9 +6,10 @@
 #include "../assets.h"
 #include "../state.h"
 #include "../utils.h"
+#include "../external/icons.h"
 #include "editor.h"
-#include "luaconsole.h"
 #include "ggwidgets.h"
+#include "luaconsole.h"
 
 static gg_editor_t* g_editor;
 
@@ -30,13 +31,36 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
     {
         igSeparator();
 
-        GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, "Scene Actors");
+        GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, ICON_EYE " State Viewer");
 
+        // Spawning/controls
+        const uint32_t max_actor_spec_names = 64;
+        char* actor_spec_names[max_actor_spec_names] = {0};
+        Assets_FindAssetsByType(assets, actor_spec_names, ASSET_ACTOR_SPEC);
+
+        if (igBeginCombo("Actor Spec", "Spawn an Actor Spec...", 0)) {
+            for (size_t i = 0; i < max_actor_spec_names; i++) {
+                if (actor_spec_names[i] != NULL) {
+                    const char* name = actor_spec_names[i];
+                    if (igButton2(name)) {
+                        gg_asset_t* spec_asset;
+                        bool valid = Assets_Get(assets, &spec_asset, name);
+                        if (valid) {
+                            Scene_NewActorFromSpec(state->current_scene, assets, window, &spec_asset->data.as_actor_spec);
+                        }
+                        igClosePopupToLevel(0, true);
+                    }
+                }
+            }
+            igEndCombo();
+        }
+        igSeparator();
+
+        // Show actors
         const uint32_t max_script_names = 64;
         char* script_names[max_script_names] = {0};
         Assets_FindAssetsByType(assets, script_names, ASSET_SCRIPT);
 
-        // For each actor
         gg_scene_t* scene = state->current_scene;
         for (uint32_t actor_id = 0; actor_id < SCENE_MAX_ACTORS; actor_id++) {
             gg_actor_t* actor = &scene->actors[actor_id];

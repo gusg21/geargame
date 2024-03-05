@@ -1,4 +1,5 @@
 #include "cimgui_impl_raylib.h"
+#include "external/font_ofi.h"
 
 #include <math.h>
 
@@ -16,6 +17,23 @@ bool ImGui_ImplRaylib_Init() {
     struct ImGuiIO* io = igGetIO();
 
     ImFontAtlas_AddFontDefault(io->Fonts, NULL);
+
+    // ImFontGlyphRangesBuilder* builder = ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder();
+    // ImVector_ImWchar* ranges = ImVector_ImWchar_create();
+    // ImVector_ImWchar_Init(ranges);
+    // for (uint32_t c = 0xE000; c <= 0xF8FF; c++)
+    //     ImFontGlyphRangesBuilder_AddChar(builder, c);
+    // ImFontGlyphRangesBuilder_BuildRanges(builder, ranges);
+
+    ImFontConfig* config = ImFontConfig_ImFontConfig();
+    config->MergeMode = true;
+    config->GlyphOffset.y = 5.f;
+
+    static const ImWchar icon_ranges[] = {0xE000, 0xF8FF, 0};
+    ImFontAtlas_AddFontFromMemoryCompressedTTF(io->Fonts, (void*)OFI_fnt_compressed_data, OFI_fnt_compressed_size, 18.f, config,
+                                               icon_ranges);
+    // ImVector_ImWchar_UnInit(ranges);icon_ranges
+    //ImVector_ImWchar_destroy(ranges);
 
     unsigned char* data;
     int width, height, bpp;
@@ -364,27 +382,24 @@ void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx* idx_buffe
     }
 }
 
-static void EnableScissor(float x, float y, float width, float height)
-{
+static void EnableScissor(float x, float y, float width, float height) {
     rlEnableScissorTest();
     ImGuiIO* io = igGetIO();
 
     ImVec2 scale = io->DisplayFramebufferScale;
 #if !defined(APPLE)
-    if (!IsWindowState(FLAG_WINDOW_HIGHDPI))
-    {
+    if (!IsWindowState(FLAG_WINDOW_HIGHDPI)) {
         scale.x = 1;
         scale.y = 1;
     }
 #endif
 
-    rlScissor((int)(x * scale.x),
-        (int)((io->DisplaySize.y - (int)(y + height)) * scale.y),
-        (int)(width * scale.x),
-        (int)(height * scale.y));
+    rlScissor((int)(x * scale.x), (int)((io->DisplaySize.y - (int)(y + height)) * scale.y), (int)(width * scale.x),
+              (int)(height * scale.y));
 }
 
 void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
+
     if (draw_data == NULL) {
         TraceLog(LOG_ERROR, "RenderDrawData(): draw_data was null!");
         return;
@@ -416,7 +431,6 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
                         raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, g_FontTex.id);
                     }
                 }
-
             }
             idx_buffer += pcmd->ElemCount;
 
@@ -425,8 +439,10 @@ void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
     }
 
     rlSetTexture(0);
-	rlDisableScissorTest();
-	rlEnableBackfaceCulling();
+    rlDisableScissorTest();
+    rlEnableBackfaceCulling();
+
+    // DrawTexture(g_FontTex, 0, 0, WHITE);
 }
 
 void ImGui_ImplRaylib_Render() {

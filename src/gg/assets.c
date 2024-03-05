@@ -8,6 +8,9 @@
 #include "memory.h"
 #include "utils.h"
 
+static const char* asset_file_format_strings[] = {
+    "", "assets/%s.png", "assets/%s.tmj", "assets/%s.lua", "assets/%s.json", "assets/%s.json"};
+
 void Assets_Create(gg_assets_t* assets) { assets->asset_list = NULL; }
 
 void Assets_LoadInternals(gg_assets_t* assets, gg_window_t* window, gg_state_t* state) {
@@ -17,29 +20,27 @@ void Assets_LoadInternals(gg_assets_t* assets, gg_window_t* window, gg_state_t* 
 void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg_asset_type_e type, const char* name) {
     gg_asset_pair_t* pair = Assets_CreateNew(assets, type, name);
 
-    // Load actual data
+    // Generate file name
     char formatted_path[ASSETS_MAX_PATH_LENGTH] = {0};
+    sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, asset_file_format_strings[type], name);
+
+    // Load actual data
     switch (type) {
         case ASSET_TEXTURE:
-            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.png", name);
             Texture_LoadFromFile(&pair->asset.data.as_tex, formatted_path);
             break;
         case ASSET_TILED_MAP:
-            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.tmj", name);
             TiledMap_LoadFromTMJ(&pair->asset.data.as_tiled_map, formatted_path);
             break;
         case ASSET_SCRIPT:
-            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.lua", name);
             Script_LoadFromLua(&pair->asset.data.as_script, formatted_path);
             break;
         case ASSET_SCENE:
             // This asset is FANCY (read: painful) and needs the asset manager itself!!!
             // Yippee!!!
-            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.json", name);
             Scene_LoadFromJson(&pair->asset.data.as_scene, assets, window, state, formatted_path);
             break;
         case ASSET_ACTOR_SPEC:
-            sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, "assets/%s.json", name);
             ActorSpec_LoadFromJSON(&pair->asset.data.as_actor_spec, formatted_path);
             break;
         default:
@@ -111,6 +112,29 @@ gg_asset_pair_t* Assets_CreateNew(gg_assets_t* assets, gg_asset_type_e type, con
     last_pair->next = pair;
 
     return pair;
+}
+
+void Assets_SaveAssetPair(gg_assets_t* assets, gg_asset_pair_t* pair) {
+    // Generate file name
+    char formatted_path[ASSETS_MAX_PATH_LENGTH] = {0};
+    sprintf_s(formatted_path, ASSETS_MAX_PATH_LENGTH, asset_file_format_strings[pair->asset.type], pair->name);
+
+    FILE* asset_file = fopen(formatted_path, "w");
+    if (asset_file == NULL) {
+        Log_Warn(Log_TextFormat("ASSETS: Unable to write %s asset to file %s", Assets_GetTypeName(pair->asset.type),
+                                formatted_path));
+        return;
+    }
+
+    switch (pair->asset.type) {
+        case ASSET_SCRIPT:
+            fwrite(pair->asset.data.as_script.text, sizeof(char), strlen(pair->asset.data.as_script.text), asset_file);
+            break;
+        default:
+            Log_Warn(Log_TextFormat("ASSETS: Unsupported save type %s", Assets_GetTypeName(pair->asset.type)));
+            break;
+    }
+    fclose(asset_file);
 }
 
 const char* Assets_GetTypeName(gg_asset_type_e type) {

@@ -1,8 +1,10 @@
 #include "ggwidgets.h"
 
+#include <string.h>
+
 #include "../actor.h"
-#include "../state.h"
 #include "../memory.h"
+#include "../state.h"
 #include "../utils.h"
 #include "editor.h"
 
@@ -17,15 +19,17 @@ void GGWidgets_Console_Create(gg_console_t* console, size_t line_count) {
 }
 
 void GGWidgets_Console_AppendLineColored(gg_console_t* console, const char* text, gg_color_t color) {
-    char* new_line = GG_CALLOC(WIDGETS_CONSOLE_MAX_LINE_LEN, sizeof(char));
-    sprintf_s(new_line, WIDGETS_CONSOLE_MAX_LINE_LEN, "%s", text);
+    // TODO: We are intentionally using the stdlib calloc()/free() functions here - something about this code is either
+    // hard for my memory.h system to track or there's just a leak lol
+    char* new_line = calloc(WIDGETS_CONSOLE_MAX_LINE_LEN, sizeof(char));
+    memcpy(new_line, text, WIDGETS_CONSOLE_MAX_LINE_LEN);
 
     // Clear the last one
-    if (console->lines[console->line_count - 1] != NULL) {
-        GG_FREE(console->lines[console->line_count - 1]);  
-        console->lines[console->line_count - 1] = NULL;
+    char* line = console->lines[console->line_count - 1];
+    if (line != NULL) {
+        free(line);
+        line = NULL;
     }
-    
 
     for (size_t i = console->line_count - 1; i > 0; i--) {
         console->lines[i] = console->lines[i - 1];

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "cimgui/cimgui.h"
 #include "cimgui/imgui/imconfig.h"
+#include "external/icons.h"
 
 static double g_Time = 0.0;
 static Texture2D g_FontTex;

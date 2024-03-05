@@ -13,6 +13,8 @@ void State_Init(gg_state_t* state) {
 
     ImGui_ImplRaylib_Init();
     igStyleColorsDark(NULL);
+
+    
 #endif
 
     Keys_Create(&state->keys);
@@ -104,9 +106,9 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
             // igUpdatePlatformWindows();
             // igRenderPlatformWindowsDefault(NULL, NULL);
 #endif
-            
 
             Window_DrawSpaceOrigin(window);
+
         }
         Window_EndDrawing(window);
     } else {

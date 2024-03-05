@@ -55,7 +55,8 @@ void _Memory_Free(void* address, int32_t source_line, const char* source_name) {
     while (alloc != NULL) {
         if (alloc->address == address) {
             if (alloc->freed) {
-                Log_Warn(Log_TextFormat("Re-freeing already freed memory! (@0x%x)", address));
+                //Log_Warn(Log_TextFormat("Re-freeing already freed memory! (alloc @0x%x, %s:%d) (called %s:%d)", address, alloc->source_name,
+                //                        alloc->source_line, source_name, source_line));
             } else {
                 free(address);
                 alloc->freed = true;
