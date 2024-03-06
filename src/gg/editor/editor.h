@@ -12,6 +12,17 @@
 #include "luaconsole.h"
 #include "outputconsole.h"
 
+#define ICON_GG_ASSET ICON_WIDGETS
+#define ICON_GG_LUA ICON_TERMINAL
+#define ICON_GG_OUTPUT ICON_TERMINAL
+#define ICON_GG_IMGUI ICON_SETTINGS
+
+#define ICON_GG_ACTOR_SPEC ICON_PALLET
+#define ICON_GG_SCRIPT ICON_BOLT
+#define ICON_GG_SCENE ICON_FORMAT_LIST_NUMBERED
+#define ICON_GG_TEXTURE ICON_IMAGE
+#define ICON_GG_TILED_MAP ICON_GRID_VIEW
+
 typedef struct gg_state gg_state_t;
 typedef struct gg_assets gg_assets_t;
 typedef struct gg_window gg_window_t;
@@ -35,7 +46,9 @@ typedef struct gg_editor {
 
     bool is_output_console_visible;
     gg_output_console_t output_console;
-    
+
+    bool is_game_open;
+
 } gg_editor_t;
 
 // Create the Geargame Editor. Needs the scripting context to set up the Lua Console print hooks
@@ -45,6 +58,6 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
 // Clean up the editor
 void Editor_Destroy(gg_editor_t* editor);
 
-#endif // GG_EDITOR_H
+#endif  // GG_EDITOR_H
 
-#endif // GG_EDITOR
+#endif  // GG_EDITOR

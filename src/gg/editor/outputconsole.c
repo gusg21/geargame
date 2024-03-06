@@ -1,3 +1,5 @@
+#ifdef GG_EDITOR
+
 #include "outputconsole.h"
 
 #include <stdio.h>
@@ -83,7 +85,7 @@ void OutputConsole_ExecuteCommand(gg_output_console_t* console, const char* line
 }
 
 void OutputConsole_Do(gg_output_console_t* console) {
-    if (igBegin("Output Console", &console->open, 0)) {
+    if (igBegin(ICON_TERMINAL " Output Console", &console->open, 0)) {
         GGWidgets_Console_Do(&console->console, false);
     }
     igEnd();
@@ -93,3 +95,5 @@ void OutputConsole_Destroy(gg_output_console_t* console) {
     GGWidgets_Console_Destroy(&console->console);
     SetTraceLogCallback(NULL);
 }
+
+#endif

@@ -16,7 +16,6 @@ bool ImGui_ImplRaylib_Init() {
     rlEnableScissorTest();
     struct ImGuiIO* io = igGetIO();
 
-    ImFontAtlas_AddFontDefault(io->Fonts, NULL);
 
     // ImFontGlyphRangesBuilder* builder = ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder();
     // ImVector_ImWchar* ranges = ImVector_ImWchar_create();
@@ -26,11 +25,15 @@ bool ImGui_ImplRaylib_Init() {
     // ImFontGlyphRangesBuilder_BuildRanges(builder, ranges);
 
     ImFontConfig* config = ImFontConfig_ImFontConfig();
+
+    ImFontAtlas_AddFontDefault(io->Fonts, config);
+
     config->MergeMode = true;
+    config->PixelSnapH = true;
     config->GlyphOffset.y = 5.f;
 
-    static const ImWchar icon_ranges[] = {0xE000, 0xF8FF, 0};
-    ImFontAtlas_AddFontFromMemoryCompressedTTF(io->Fonts, (void*)OFI_fnt_compressed_data, OFI_fnt_compressed_size, 18.f, config,
+    static const ImWchar icon_ranges[] = {MIN_CODE_POINT, 0xFFFF, 0};
+    ImFontAtlas_AddFontFromFileTTF(io->Fonts, "ofi.ttf", 16.f, config,
                                                icon_ranges);
     // ImVector_ImWchar_UnInit(ranges);icon_ranges
     //ImVector_ImWchar_destroy(ranges);

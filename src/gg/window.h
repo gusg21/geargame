@@ -16,6 +16,7 @@ typedef struct gg_window {
     bool initialized;
     bool fullscreen;
     uint32_t width, height;
+    RenderTexture2D _tex;
     // NOTE: you would probably want to include a handle to the window
     // in most other cases; in this case Raylib manages window state so
     // this might be a little silly looking in this context.
@@ -38,6 +39,8 @@ bool Window_ShouldClose(gg_window_t* window);
 bool Window_WasJustResized(gg_window_t* window);
 
 // Rendering State
+void Window_SetTarget(gg_window_t* window);
+void Window_ReleaseTarget(gg_window_t* window);
 void Window_BeginDrawing(gg_window_t* window);
 void Window_BeginCameraDrawing(gg_window_t* window, gg_camera_t* camera);
 void Window_BeginParallaxCameraDrawing(gg_window_t* window, gg_camera_t* camera, float parallax);
@@ -46,6 +49,7 @@ void Window_EndCameraDrawing(gg_window_t* window, gg_camera_t* camera);
 
 // Drawing
 void Window_ClearScreen(gg_window_t* window, gg_color_t color);
+void Window_DrawWindowTexture(gg_window_t* window);
 void Window_DrawTexture(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y);
 void Window_DrawTextureCentered(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y);
 void Window_DrawTextureCenteredSR(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y, float scale,

@@ -1,3 +1,5 @@
+#ifdef GG_EDITOR
+
 #include "ggwidgets.h"
 
 #include <string.h>
@@ -168,3 +170,5 @@ void GGWidgets_Actor(gg_actor_t* actor, uint32_t actor_id, char** script_names, 
     igInputText2("Name", actor->name, 31);
     igCheckbox("Visible", &actor->visible);
 }
+
+#endif

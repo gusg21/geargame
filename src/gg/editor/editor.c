@@ -4,9 +4,9 @@
 
 #include "../actor.h"
 #include "../assets.h"
+#include "../external/icons.h"
 #include "../state.h"
 #include "../utils.h"
-#include "../external/icons.h"
 #include "editor.h"
 #include "ggwidgets.h"
 #include "luaconsole.h"
@@ -27,18 +27,18 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
 
 static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     ImGuiIO* io = igGetIO();
-    igBegin("Scene Viewer", &editor->is_scene_viewer_open, 0);
+    igBegin(ICON_GG_SCENE " Scene Viewer", &editor->is_scene_viewer_open, 0);
     {
         igSeparator();
 
-        GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, ICON_EYE " State Viewer");
+        GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, ICON_GG_SCENE " Scene Viewer");
 
         // Spawning/controls
         const uint32_t max_actor_spec_names = 64;
         char* actor_spec_names[max_actor_spec_names] = {0};
         Assets_FindAssetsByType(assets, actor_spec_names, ASSET_ACTOR_SPEC);
 
-        if (igBeginCombo("Actor Spec", "Spawn an Actor Spec...", 0)) {
+        if (igBeginCombo("Actor Spec", ICON_GG_ACTOR_SPEC " Spawn an Actor Spec...", 0)) {
             for (size_t i = 0; i < max_actor_spec_names; i++) {
                 if (actor_spec_names[i] != NULL) {
                     const char* name = actor_spec_names[i];
@@ -46,7 +46,8 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
                         gg_asset_t* spec_asset;
                         bool valid = Assets_Get(assets, &spec_asset, name);
                         if (valid) {
-                            Scene_NewActorFromSpec(state->current_scene, assets, window, &spec_asset->data.as_actor_spec);
+                            Scene_NewActorFromSpec(state->current_scene, assets, window,
+                                                   &spec_asset->data.as_actor_spec);
                         }
                         igClosePopupToLevel(0, true);
                     }
@@ -92,33 +93,36 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
         igSetWindowPos_Vec2((ImVec2){0, 0}, ImGuiCond_Always);
         igSetWindowSize_Vec2((ImVec2){(float)GetScreenWidth(), 36}, ImGuiCond_Always);
 
-        if (igButton2("Quit")) {
+        if (igButton2(ICON_CLOSE " Quit")) {
             State_Quit(state);
         }
         igSameLine2();
 
-        igText("gg engine");
+        igCheckbox("Mega", &state->render_to_window);
+        igSameLine2();
+
+        igText(ICON_SPORTS_ESPORTS " gg engine");
         igSameLine2();
 
         igText("-");
         igSameLine2();
 
-        GGWidgets_ToggleButton("Scene", &editor->is_scene_viewer_visible);
+        GGWidgets_ToggleButton(ICON_GG_SCENE " Scene", &editor->is_scene_viewer_visible);
         igSameLine2();
 
-        GGWidgets_ToggleButton("Code", &editor->is_code_editor_visible);
+        GGWidgets_ToggleButton(ICON_GG_SCRIPT " Code", &editor->is_code_editor_visible);
         igSameLine2();
 
-        GGWidgets_ToggleButton("Assets", &editor->is_assets_viewer_visible);
+        GGWidgets_ToggleButton(ICON_GG_ASSET " Assets", &editor->is_assets_viewer_visible);
         igSameLine2();
 
-        GGWidgets_ToggleButton("Lua", &editor->is_lua_console_visible);
+        GGWidgets_ToggleButton(ICON_GG_LUA " Lua", &editor->is_lua_console_visible);
         igSameLine2();
 
-        GGWidgets_ToggleButton("Output", &editor->is_output_console_visible);
+        GGWidgets_ToggleButton(ICON_GG_OUTPUT " Output", &editor->is_output_console_visible);
         igSameLine2();
 
-        GGWidgets_ToggleButton("ImGui Demo", &editor->is_demo_window_visible);
+        GGWidgets_ToggleButton(ICON_GG_IMGUI " ImGui Demo", &editor->is_demo_window_visible);
         igSameLine2();
 
         igText("FPS %.2f (ft %.2f)", 1.f / Window_GetDeltaTime(window), Window_GetDeltaTime(window));
@@ -126,8 +130,38 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
     igEnd();
 }
 
+static void Editor_S_DoGameView(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
+    igSetNextWindowSize((ImVec2){window->_tex.texture.width / 2, window->_tex.texture.height / 2},
+                        ImGuiCond_FirstUseEver);
+    if (igBegin("Game", &editor->is_game_open, ImGuiWindowFlags_MenuBar)) {
+        ImVec2 avail_size, window_size;
+        igGetContentRegionAvail(&avail_size);
+        igGetWindowSize(&window_size);
+
+        bool correct = false;
+        if (igBeginMenuBar()) {
+            if (igButton2("Correct Aspect")) {
+                correct = true;
+            }
+            igEndMenuBar();
+        }
+
+        if (correct) {
+            igSetWindowSize_Vec2(
+                (ImVec2){window_size.x, window_size.x * ((float)window->_tex.texture.height / (float)window->_tex.texture.width)},
+                ImGuiCond_Always);
+        }
+
+        // Draw the game
+        igImage(&window->_tex.texture.id, avail_size, (ImVec2){0, 1}, (ImVec2){1, 0}, (ImVec4){1.f, 1.f, 1.f, 1.f}, (ImVec4){1.f, 1.f, 1.f, 1.f});
+    }
+    igEnd();
+}
+
 void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     Editor_S_DoToolbar(editor, state, assets, window);
+
+    // igDockSpaceOverViewport2(igGetMainViewport());
 
     if (editor->is_scene_viewer_visible) Editor_S_DoSceneViewer(editor, state, assets, window);
     if (editor->is_assets_viewer_visible) AssetEditor_Do(&editor->asset_editor, editor, state, assets, window);
@@ -135,6 +169,7 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     if (editor->is_lua_console_visible) LuaConsole_Do(&editor->lua_console, &state->current_scene->scripting);
     if (editor->is_output_console_visible) OutputConsole_Do(&editor->output_console);
     if (editor->is_demo_window_visible) igShowDemoWindow(&editor->is_demo_window_open);
+    if (!state->render_to_window) Editor_S_DoGameView(editor, state, assets, window);    
 }
 
 void Editor_Destroy(gg_editor_t* editor) {

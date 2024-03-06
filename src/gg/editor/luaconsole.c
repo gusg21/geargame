@@ -1,3 +1,5 @@
+#ifdef GG_EDITOR
+
 #include "luaconsole.h"
 
 #include <stdio.h>
@@ -34,7 +36,7 @@ void LuaConsole_Do(gg_lua_console_t* console, gg_scripting_t* scripting) {
     igCalcTextSize(&size, "TALL LETTERS", NULL, false, 0);
     float height = igGetStyle()->ItemSpacing.y + size.y;
     igSetNextWindowSizeConstraints2((ImVec2){0.f, 0.f}, (ImVec2){FLT_MAX, (EDITOR_LUA_CONSOLE_LINES + 4) * height});
-    if (igBegin("Lua Console", &console->open, 0)) {
+    if (igBegin(ICON_TERMINAL " Lua Console", &console->open, 0)) {
         GGWidgets_Console_Do(&console->console, true);
 
         if (igInputText("<", console->lua_input_line, 127, ImGuiInputTextFlags_EnterReturnsTrue, NULL, NULL)) {
@@ -63,3 +65,5 @@ int LuaConsole_LuaPrint(lua_State* L) {
 void LuaConsole_Destroy(gg_lua_console_t* console) {
     GGWidgets_Console_Destroy(&console->console);
 }
+
+#endif

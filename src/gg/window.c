@@ -15,6 +15,8 @@ void Window_CreateWindowed(gg_window_t* window, const char* title, uint32_t widt
     window->initialized = IsWindowReady();
     Window_SetFullscreen(window, false);
 
+    window->_tex = LoadRenderTexture(width, height);
+
     // Disable ESC to exit
     SetExitKey(KEY_NULL);
 
@@ -33,6 +35,8 @@ void Window_CreateFullscreen(gg_window_t* window, const char* title) {
     InitWindow(width, height, title);
     Window_SetFullscreen(window, true);
 
+    window->_tex = LoadRenderTexture(width, height);
+
     SetTargetFPS(60);
 }
 
@@ -44,9 +48,7 @@ void Window_SetFullscreen(gg_window_t* window, bool fullscreen) {
     window->fullscreen = fullscreen;
 }
 
-void Window_Destroy(gg_window_t* window) { 
-    CloseWindow();
-}
+void Window_Destroy(gg_window_t* window) { CloseWindow(); }
 
 uint32_t Window_GetWidth(gg_window_t* window) { return GetScreenWidth(); }
 
@@ -57,6 +59,10 @@ float Window_GetDeltaTime(gg_window_t* window) { return GetFrameTime(); }
 bool Window_ShouldClose(gg_window_t* window) { return WindowShouldClose(); }
 
 bool Window_WasJustResized(gg_window_t* window) { return IsWindowResized(); }
+
+void Window_SetTarget(gg_window_t* window) { BeginTextureMode(window->_tex); }
+
+void Window_ReleaseTarget(gg_window_t* window) { EndTextureMode(); }
 
 void Window_BeginDrawing(gg_window_t* window) { BeginDrawing(); }
 
@@ -86,12 +92,18 @@ void Window_ClearScreen(gg_window_t* window, gg_color_t color) {
     ClearBackground((Color){.r = color.r, .g = color.g, .b = color.b, .a = color.a});
 }
 
+void Window_DrawWindowTexture(gg_window_t* window) {
+    DrawTextureRec(window->_tex.texture, (Rectangle){0, 0, window->_tex.texture.width, -window->_tex.texture.height},
+                   (Vector2){0, 0}, WHITE);
+}
+
 void Window_DrawTexture(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y) {
     DrawTexture(texture->_handle, x, y, WHITE);
 }
 
 void Window_DrawTextureCentered(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y) {
-    DrawTexture(texture->_handle, x - Texture_GetWidth(texture) / 2, y - (int32_t)Texture_GetHeight(texture) / 2, WHITE);
+    DrawTexture(texture->_handle, x - Texture_GetWidth(texture) / 2, y - (int32_t)Texture_GetHeight(texture) / 2,
+                WHITE);
 }
 
 void Window_DrawTextureCenteredSR(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y, float scale,
@@ -104,7 +116,8 @@ void Window_DrawTextureCenteredSR(gg_window_t* window, gg_texture_t* texture, in
 
 void Window_DrawSubTexture(gg_window_t* window, gg_texture_t* texture, int32_t x, int32_t y, uint32_t sx, uint32_t sy,
                            uint32_t sw, uint32_t sh) {
-    DrawTextureRec(texture->_handle, (Rectangle){(float)sx, (float)sy, (float)sw, (float)sh}, (Vector2){(float)x, (float)y}, WHITE);
+    DrawTextureRec(texture->_handle, (Rectangle){(float)sx, (float)sy, (float)sw, (float)sh},
+                   (Vector2){(float)x, (float)y}, WHITE);
 }
 
 void Window_DrawRectangle(const gg_window_t* window, int32_t x, int32_t y, uint32_t w, uint32_t h, gg_color_t color) {

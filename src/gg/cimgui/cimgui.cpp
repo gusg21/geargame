@@ -733,6 +733,10 @@ CIMGUI_API void igImage(ImTextureID user_texture_id,const ImVec2 image_size,cons
 {
     return ImGui::Image(user_texture_id,image_size,uv0,uv1,tint_col,border_col);
 }
+CIMGUI_API void igImage2(ImTextureID user_texture_id,const ImVec2 image_size)
+{
+    return ImGui::Image(user_texture_id,image_size);
+}
 CIMGUI_API bool igImageButton(const char* str_id,ImTextureID user_texture_id,const ImVec2 image_size,const ImVec2 uv0,const ImVec2 uv1,const ImVec4 bg_col,const ImVec4 tint_col)
 {
     return ImGui::ImageButton(str_id,user_texture_id,image_size,uv0,uv1,bg_col,tint_col);
@@ -1350,6 +1354,9 @@ CIMGUI_API ImGuiID igDockSpace(ImGuiID id,const ImVec2 size,ImGuiDockNodeFlags f
 CIMGUI_API ImGuiID igDockSpaceOverViewport(const ImGuiViewport* viewport,ImGuiDockNodeFlags flags,const ImGuiWindowClass* window_class)
 {
     return ImGui::DockSpaceOverViewport(viewport,flags,window_class);
+}
+CIMGUI_API ImGuiID igDockSpaceOverViewport2(const ImGuiViewport* viewport) {
+    return ImGui::DockSpaceOverViewport(viewport);
 }
 CIMGUI_API void igSetNextWindowDockID(ImGuiID dock_id,ImGuiCond cond)
 {

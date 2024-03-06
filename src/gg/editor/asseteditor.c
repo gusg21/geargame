@@ -1,3 +1,5 @@
+#ifdef GG_EDITOR
+
 #include "asseteditor.h"
 
 #include "string.h"
@@ -30,7 +32,7 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
         case ASSET_SCRIPT: {
             igValue_Bool("OK?", pair->asset.data.as_script.ok);
             igPushStyleColor_Vec4(ImGuiCol_Button, (ImVec4){205 / 255.f, 106 / 255.f, 195 / 255.f, 255 / 255.f});
-            if (igButton2(ICON_EDIT_3 "Edit Code")) {
+            if (igButton2(ICON_EDIT "Edit Code")) {
                 CodeEditor_EditScriptAsset(code_editor, pair);
                 editor->is_code_editor_visible = true;
             }
@@ -67,7 +69,7 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
 static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state,
                                          gg_assets_t* assets, gg_window_t* window) {
     if (igBeginPopup("Create New Actor Spec Popup", ImGuiWindowFlags_NoDecoration)) {
-        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, "New Actor Spec");
+        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_GG_ACTOR_SPEC " New Actor Spec");
 
         igInputText2("Actor Spec Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
@@ -81,7 +83,7 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
     }
 
     if (igBeginPopup("Create New Script Popup", ImGuiWindowFlags_NoDecoration)) {
-        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, "New Script");
+        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_STAR " New Script");
 
         igInputText2("Script Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
@@ -96,11 +98,28 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
     }
 }
 
+static const char* AssetEditor_S_GetTypeIcon(gg_asset_type_e type) {
+    switch (type) {
+        case ASSET_ACTOR_SPEC:
+            return ICON_GG_ACTOR_SPEC;
+        case ASSET_SCENE:
+            return ICON_GG_SCENE;
+        case ASSET_SCRIPT:
+            return ICON_GG_SCRIPT;
+        case ASSET_TEXTURE:
+            return ICON_GG_TEXTURE;
+        case ASSET_TILED_MAP:
+            return ICON_GG_TILED_MAP;
+        default:
+            return ICON_QUESTION_MARK;
+    }
+}
+
 void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets,
                     gg_window_t* window) {
-    igBegin("Assets Viewer", &asset_editor->open, 0);
+    igBegin(ICON_GG_ASSET " Assets Viewer", &asset_editor->open, 0);
     {
-        GGWidgets_Header((ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, "Assets Viewer");
+        GGWidgets_Header((ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, ICON_GG_ASSET " Assets Viewer");
 
         if (igBeginPopup("Create New Asset Popup", ImGuiWindowFlags_NoDecoration)) {
             AssetEditor_S_DoCreatePopups(asset_editor, editor, state, assets, window);
@@ -124,7 +143,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
             igEndPopup();
         }
 
-        if (igButton2(ICON_PLUS "Create New Asset")) {
+        if (igButton2(ICON_ADD " Create New Asset")) {
             igOpenPopup_Str("Create New Asset Popup", 0);
         }
 
@@ -134,8 +153,9 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
         int id = 0;
         while (pair != NULL) {
             const char* type_name = Assets_GetTypeName(pair->asset.type);
+            const char* type_icon = AssetEditor_S_GetTypeIcon(pair->asset.type);
 
-            if (igTreeNode_StrStr(pair->name, "%s (%s)", pair->name, type_name)) {
+            if (igTreeNode_StrStr(pair->name, "%s %s (%s)", type_icon, pair->name, type_name)) {
                 AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, pair);
 
                 igTreePop();
@@ -150,3 +170,5 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
 void AssetEditor_Destroy(gg_asset_editor_t* asset_editor) {
     // Don't need to clean up anything
 }
+
+#endif

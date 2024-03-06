@@ -14,6 +14,7 @@ typedef struct gg_state {
     gg_editor_t editor;
 #endif
 
+    bool render_to_window;
     bool wants_exit;
 } gg_state_t;
 

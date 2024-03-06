@@ -14,21 +14,25 @@ void State_Init(gg_state_t* state) {
     ImGui_ImplRaylib_Init();
     igStyleColorsDark(NULL);
 
-    
 #endif
 
     Keys_Create(&state->keys);
     state->current_scene = NULL;
 
+    #ifdef GG_EDITOR
+    state->render_to_window = false;
+    #else
+    state->render_to_window = true;
+    #endif
     state->wants_exit = false;
 }
 
-void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) { 
+void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) {
     state->current_scene = scene;
 #ifdef GG_EDITOR
     Editor_Create(&state->editor, &scene->scripting);
 #endif
- }
+}
 
 void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     if (state->current_scene != NULL) {
@@ -46,7 +50,6 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 #endif
 
         State_Tick(state, window);
-        
 
 #ifdef GG_EDITOR
         State_TickEditor(state, assets, window);
@@ -54,8 +57,7 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 
         State_Draw(state, window);
 
-        if (state->wants_exit)
-            break;
+        if (state->wants_exit) break;
     }
 
     State_Destroy(state);
@@ -83,34 +85,41 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
     Window_ClearScreen(window, COL(10, 20, 30));
 
     if (state->current_scene != NULL) {
-        // Background Space Rendering
-        Window_BeginParallaxCameraDrawing(window, &state->current_scene->camera, 0.2f);
-        { Window_DrawSpaceOrigin(window); }
-        Window_EndCameraDrawing(window, &state->current_scene->camera);
-
-        // World Space Rendering
-        Window_BeginCameraDrawing(window, &state->current_scene->camera);
+        Window_SetTarget(window);
         {
-            Scene_Draw(state->current_scene, window);
-            Window_DrawSpaceOrigin(window);
-        }
-        Window_EndCameraDrawing(window, &state->current_scene->camera);
+            Window_ClearScreen(window, COL(10, 20, 30));
+            
+            // Background Space Rendering
+            Window_BeginParallaxCameraDrawing(window, &state->current_scene->camera, 0.2f);
+            { Window_DrawSpaceOrigin(window); }
+            Window_EndCameraDrawing(window, &state->current_scene->camera);
 
-        // Screen Space Rendering
+            // World Space Rendering
+            Window_BeginCameraDrawing(window, &state->current_scene->camera);
+            {
+                Scene_Draw(state->current_scene, window);
+                Window_DrawSpaceOrigin(window);
+            }
+            Window_EndCameraDrawing(window, &state->current_scene->camera);
+        }
+        Window_ReleaseTarget(window);
+
         Window_BeginDrawing(window);
         {
-            Window_DrawDebugFPS(window);
+            if (state->render_to_window) {
+                Window_DrawWindowTexture(window);
+            }
 
 #ifdef GG_EDITOR
             ImGui_ImplRaylib_Render();
             // igUpdatePlatformWindows();
             // igRenderPlatformWindowsDefault(NULL, NULL);
 #endif
-
-            Window_DrawSpaceOrigin(window);
+        
 
         }
         Window_EndDrawing(window);
+
     } else {
         Window_BeginDrawing(window);
         { Window_DrawRectangle(window, 0, 0, Window_GetWidth(window), Window_GetHeight(window), COL(220, 200, 10)); }
@@ -118,9 +127,7 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
     }
 }
 
-void State_Quit(gg_state_t* state) {
-    state->wants_exit = true;
-}
+void State_Quit(gg_state_t* state) { state->wants_exit = true; }
 
 void State_Destroy(gg_state_t* state) {
     // NOTE: Don't need to kill the scene; we only have a pointer to a gg_scene_t managed by the assets
