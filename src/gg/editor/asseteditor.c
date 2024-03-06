@@ -6,6 +6,7 @@
 
 #include "../assets.h"
 #include "../cimgui_impl_raylib.h"
+#include "../state.h"
 #include "editor.h"
 #include "ggwidgets.h"
 
@@ -15,7 +16,7 @@ void AssetEditor_Create(gg_asset_editor_t* asset_editor) {
 }
 
 void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* assets, gg_editor_t* editor,
-                               gg_code_editor_t* code_editor, gg_asset_pair_t* pair) {
+                               gg_code_editor_t* code_editor, gg_state_t* state, gg_asset_pair_t* pair) {
     const char* type_name = Assets_GetTypeName(pair->asset.type);
 
     igLabelText("Name", "[ %s ]", pair->name);
@@ -48,6 +49,19 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
                    pair->asset.data.as_actor_spec.initial_pos.y);
             break;
         }
+        case ASSET_SCENE: {
+            bool is_current = &pair->asset.data.as_scene == state->current_scene;
+            igBeginDisabled(is_current);
+            if (igButton2(ICON_GG_EDIT " Edit Scene")) {
+                State_SetCurrentScene(state, &pair->asset.data.as_scene);
+            }
+            igEndDisabled();
+            if (is_current) {
+                igSameLine2();
+                igText(ICON_GG_CLOSE " Scene already open");
+            }
+            break;
+        }
         default:
             igTextColored((ImVec4){0.5f, 0.5f, 0.5f, 1.0f}, "No preview for %s", type_name);
             break;
@@ -69,7 +83,8 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
 static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state,
                                          gg_assets_t* assets, gg_window_t* window) {
     if (igBeginPopup("Create New Actor Spec Popup", ImGuiWindowFlags_NoDecoration)) {
-        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_GG_ACTOR_SPEC " New Actor Spec");
+        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f},
+                         ICON_GG_ACTOR_SPEC " New Actor Spec");
 
         igInputText2("Actor Spec Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
@@ -154,9 +169,14 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
         while (pair != NULL) {
             const char* type_name = Assets_GetTypeName(pair->asset.type);
             const char* type_icon = AssetEditor_S_GetTypeIcon(pair->asset.type);
+            bool is_current_scene = false;
+            if (pair->asset.type == ASSET_SCENE && state->current_scene == &pair->asset.data) {
+                is_current_scene = true;
+            }
 
-            if (igTreeNode_StrStr(pair->name, "%s %s (%s)", type_icon, pair->name, type_name)) {
-                AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, pair);
+            if (igTreeNode_StrStr(pair->name, "%s %s (%s) %s", type_icon, pair->name, type_name,
+                                  is_current_scene ? ICON_GG_SPECIAL : "")) {
+                AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, state, pair);
 
                 igTreePop();
             }

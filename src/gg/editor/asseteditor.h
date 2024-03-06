@@ -19,7 +19,7 @@ typedef struct gg_asset_editor {
 
 void AssetEditor_Create(gg_asset_editor_t* asset_editor);
 void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* assets, gg_editor_t* editor,
-                               gg_code_editor_t* code_editor, gg_asset_pair_t* pair);
+                               gg_code_editor_t* code_editor, gg_state_t* state, gg_asset_pair_t* pair);
 void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets,
                     gg_window_t* window);
 void AssetEditor_Destroy(gg_asset_editor_t* asset_editor);
