@@ -93,7 +93,7 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
         igSetWindowPos_Vec2((ImVec2){0, 0}, ImGuiCond_Always);
         igSetWindowSize_Vec2((ImVec2){(float)GetScreenWidth(), 36}, ImGuiCond_Always);
 
-        if (igButton2(ICON_CLOSE " Quit")) {
+        if (igButton2(ICON_GG_CLOSE " Quit")) {
             State_Quit(state);
         }
         igSameLine2();
@@ -101,7 +101,7 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
         igCheckbox("Mega", &state->render_to_window);
         igSameLine2();
 
-        igText(ICON_SPORTS_ESPORTS " gg engine");
+        igText(ICON_GG_GAME " gg engine");
         igSameLine2();
 
         igText("-");
@@ -133,7 +133,7 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
 static void Editor_S_DoGameView(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     igSetNextWindowSize((ImVec2){window->_tex.texture.width / 2, window->_tex.texture.height / 2},
                         ImGuiCond_FirstUseEver);
-    if (igBegin("Game", &editor->is_game_open, ImGuiWindowFlags_MenuBar)) {
+    if (igBegin(ICON_GG_GAME " Game", &editor->is_game_open, ImGuiWindowFlags_MenuBar)) {
         ImVec2 avail_size, window_size;
         igGetContentRegionAvail(&avail_size);
         igGetWindowSize(&window_size);

@@ -16,11 +16,11 @@ void CodeEditor_Do(gg_code_editor_t* code_editor) {
 
             igSameLine2();
 
-            if (igButton(ICON_SAVE " Save Asset", (ImVec2){100, 17})) {
+            if (igButton(ICON_GG_SAVE " Save Asset", (ImVec2){100, 17})) {
                 CodeEditor_SaveScriptAsset(code_editor, code_editor->text_editor_pair);
             }
         } else {
-            igText(ICON_WARNING " Pick an asset from the Assets Viewer to edit its code");
+            igText(ICON_GG_WARNING " Pick an asset from the Assets Viewer to edit its code");
         }
 
         TextEditor_render(&code_editor->text_editor);

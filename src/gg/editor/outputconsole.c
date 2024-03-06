@@ -8,6 +8,7 @@
 #include <time.h>
 
 #include "../utils.h"
+#include "editor.h"
 
 gg_output_console_t* g_output_console = NULL;
 
@@ -85,7 +86,7 @@ void OutputConsole_ExecuteCommand(gg_output_console_t* console, const char* line
 }
 
 void OutputConsole_Do(gg_output_console_t* console) {
-    if (igBegin(ICON_TERMINAL " Output Console", &console->open, 0)) {
+    if (igBegin(ICON_GG_OUTPUT " Output Console", &console->open, 0)) {
         GGWidgets_Console_Do(&console->console, false);
     }
     igEnd();

@@ -32,7 +32,7 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
         case ASSET_SCRIPT: {
             igValue_Bool("OK?", pair->asset.data.as_script.ok);
             igPushStyleColor_Vec4(ImGuiCol_Button, (ImVec4){205 / 255.f, 106 / 255.f, 195 / 255.f, 255 / 255.f});
-            if (igButton2(ICON_EDIT "Edit Code")) {
+            if (igButton2(ICON_GG_EDIT "Edit Code")) {
                 CodeEditor_EditScriptAsset(code_editor, pair);
                 editor->is_code_editor_visible = true;
             }
@@ -59,7 +59,7 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
     ImVec2 size = {0};
     igGetContentRegionAvail(&size);
     igPushItemWidth(size.x);
-    if (igButton(ICON_SAVE "Save Asset", (ImVec2){size.x, 0.f})) {
+    if (igButton(ICON_GG_SAVE "Save Asset", (ImVec2){size.x, 0.f})) {
         Assets_SaveAssetPair(assets, pair);
     }
     igPopItemWidth();
@@ -83,7 +83,7 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
     }
 
     if (igBeginPopup("Create New Script Popup", ImGuiWindowFlags_NoDecoration)) {
-        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_STAR " New Script");
+        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_GG_SCRIPT " New Script");
 
         igInputText2("Script Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
@@ -111,7 +111,7 @@ static const char* AssetEditor_S_GetTypeIcon(gg_asset_type_e type) {
         case ASSET_TILED_MAP:
             return ICON_GG_TILED_MAP;
         default:
-            return ICON_QUESTION_MARK;
+            return ICON_GG_UNKNOWN;
     }
 }
 
@@ -143,7 +143,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
             igEndPopup();
         }
 
-        if (igButton2(ICON_ADD " Create New Asset")) {
+        if (igButton2(ICON_GG_ADD " Create New Asset")) {
             igOpenPopup_Str("Create New Asset Popup", 0);
         }
 
