@@ -1,6 +1,6 @@
 # Gear Game Engine
 
-![Gear Game Logo](./gh-images/factory.png)
+![Demo Screenshot](./gh-images/demo1.png)
 
 This is a hacky little game engine I've been putting together in my free time using C99, Lua, and Raylib as well as a few support libraries for JSON as well as IMGUI support.
 
