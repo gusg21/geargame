@@ -7,6 +7,7 @@
 #include "../assets.h"
 #include "../cimgui_impl_raylib.h"
 #include "../state.h"
+#include "../utils.h"
 #include "editor.h"
 #include "ggwidgets.h"
 
@@ -16,7 +17,8 @@ void AssetEditor_Create(gg_asset_editor_t* asset_editor) {
 }
 
 void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* assets, gg_editor_t* editor,
-                               gg_code_editor_t* code_editor, gg_state_t* state, gg_asset_pair_t* pair) {
+                               gg_code_editor_t* code_editor, gg_state_t* state, gg_window_t* window,
+                               gg_asset_pair_t* pair) {
     const char* type_name = Assets_GetTypeName(pair->asset.type);
 
     igLabelText("Name", "[ %s ]", pair->name);
@@ -111,6 +113,21 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
 
         igEndPopup();
     }
+
+    if (igBeginPopup("Create New Scene Popup", ImGuiWindowFlags_NoDecoration)) {
+        GGWidgets_Header((ImVec4){225 / 255.f, 255 / 255.f, 74 / 255.f, 255 / 255.f}, ICON_GG_SCENE " New Scene");
+
+        igInputText2("Script Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
+
+        if (igButton2("Create!")) {
+            gg_asset_pair_t* new_asset_pair = Assets_CreateNew(assets, ASSET_SCENE, asset_editor->new_asset_name);
+            Scene_Create(&new_asset_pair->asset.data.as_scene, window, state);
+
+            igClosePopupToLevel(0, true);
+        }
+
+        igEndPopup();
+    }
 }
 
 static const char* AssetEditor_S_GetTypeIcon(gg_asset_type_e type) {
@@ -139,14 +156,20 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
         if (igBeginPopup("Create New Asset Popup", ImGuiWindowFlags_NoDecoration)) {
             AssetEditor_S_DoCreatePopups(asset_editor, editor, state, assets, window);
 
-            for (uint32_t type = 0; type < ASSET_TYPE_COUNT; type++) {
-                if (igButton2(Assets_GetTypeName(type))) {
+            for (uint32_t type = ASSET_NONE + 1; type < ASSET_TYPE_COUNT; type++) {
+                char buffer[64] = {0};
+                sprintf_s(buffer, 64, "%s %s", AssetEditor_S_GetTypeIcon(type), Assets_GetTypeName(type));
+
+                if (igButton2(buffer)) {
                     switch (type) {
                         case ASSET_ACTOR_SPEC:
                             igOpenPopup_Str("Create New Actor Spec Popup", 0);
                             break;
                         case ASSET_SCRIPT:
                             igOpenPopup_Str("Create New Script Popup", 0);
+                            break;
+                        case ASSET_SCENE:
+                            igOpenPopup_Str("Create New Scene Popup", 0);
                             break;
                         default:
                             igCloseCurrentPopup();
@@ -176,7 +199,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
 
             if (igTreeNode_StrStr(pair->name, "%s %s (%s) %s", type_icon, pair->name, type_name,
                                   is_current_scene ? ICON_GG_SPECIAL : "")) {
-                AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, state, pair);
+                AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, state, window, pair);
 
                 igTreePop();
             }

@@ -24,7 +24,8 @@ typedef struct gg_window gg_window_t;
 // Represents a set of actors, a scripting state, and a camera. Can be loaded as an asset and swapped in and out of
 // gg_state_t's ad nauseum.
 typedef struct gg_scene {
-    char* name;  // The name of the scene
+    char* name;   // The name of the scene
+    bool paused;  // Is this scene paused?
 
     gg_actor_t* actors;     // The block of actors
     uint32_t actors_alive;  // The number of actors currently activated

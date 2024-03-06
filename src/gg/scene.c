@@ -19,6 +19,9 @@ void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
     scene->name = (char*)GG_CALLOC(SCENE_DEFAULT_NAME_LEN, sizeof(char));
     sprintf_s(scene->name, SCENE_DEFAULT_NAME_LEN, "%s", SCENE_DEFAULT_NAME);
 
+    // Pausing
+    scene->paused = false;
+
     // Actors
     scene->actors = GG_CALLOC(SCENE_MAX_ACTORS, sizeof(gg_actor_t));
     scene->actors_alive = 0;

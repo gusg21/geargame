@@ -29,6 +29,8 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
     ImGuiIO* io = igGetIO();
     igBegin(ICON_GG_SCENE " Scene Viewer", &editor->is_scene_viewer_open, 0);
     {
+        GGWidgets_ToggleButton(state->current_scene->paused ? ICON_GG_PLAY : ICON_GG_PAUSE, &state->current_scene->paused);
+
         igSeparator();
 
         GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, ICON_GG_SCENE " Scene Viewer");

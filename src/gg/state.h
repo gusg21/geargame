@@ -10,6 +10,7 @@
 typedef struct gg_state {
     gg_scene_t* current_scene;
     gg_keys_t keys;
+    
 #ifdef GG_EDITOR
     gg_editor_t editor;
 #endif

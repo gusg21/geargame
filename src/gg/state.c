@@ -67,7 +67,9 @@ void State_Tick(gg_state_t* state, gg_window_t* window) {
     float delta = Window_GetDeltaTime(window);
 
     if (state->current_scene != NULL) {
-        Scene_Update(state->current_scene, delta);
+        if (!state->current_scene->paused) {
+            Scene_Update(state->current_scene, delta);
+        }
     }
 
     if (1.f / delta < 30.f) {
