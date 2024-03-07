@@ -193,7 +193,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
             const char* type_name = Assets_GetTypeName(pair->asset.type);
             const char* type_icon = AssetEditor_S_GetTypeIcon(pair->asset.type);
             bool is_current_scene = false;
-            if (pair->asset.type == ASSET_SCENE && state->current_scene == &pair->asset.data) {
+            if (pair->asset.type == ASSET_SCENE && state->current_scene == &pair->asset.data.as_scene) {
                 is_current_scene = true;
             }
 

@@ -5,6 +5,8 @@
 #include "gg/memory.h"
 
 int main() {
+    Memory_Initialize();
+
     // Create the window
     gg_window_t window = {0};
     Window_CreateWindowed(&window, "Gear Game", 1600, 900);

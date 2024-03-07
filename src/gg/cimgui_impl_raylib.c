@@ -16,7 +16,6 @@ bool ImGui_ImplRaylib_Init() {
     rlEnableScissorTest();
     struct ImGuiIO* io = igGetIO();
 
-
     // ImFontGlyphRangesBuilder* builder = ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder();
     // ImVector_ImWchar* ranges = ImVector_ImWchar_create();
     // ImVector_ImWchar_Init(ranges);
@@ -33,10 +32,9 @@ bool ImGui_ImplRaylib_Init() {
     config->GlyphOffset.y = 5.f;
 
     static const ImWchar icon_ranges[] = {MIN_CODE_POINT, 0xFFFF, 0};
-    ImFontAtlas_AddFontFromFileTTF(io->Fonts, "ofi.ttf", 16.f, config,
-                                               icon_ranges);
+    ImFontAtlas_AddFontFromFileTTF(io->Fonts, "assets/gg/fonts/MaterialIcons-Regular.ttf", 16.f, config, icon_ranges);
     // ImVector_ImWchar_UnInit(ranges);icon_ranges
-    //ImVector_ImWchar_destroy(ranges);
+    // ImVector_ImWchar_destroy(ranges);
 
     unsigned char* data;
     int width, height, bpp;
@@ -402,7 +400,6 @@ static void EnableScissor(float x, float y, float width, float height) {
 }
 
 void ImGui_ImplRaylib_RenderDrawData(ImDrawData* draw_data) {
-
     if (draw_data == NULL) {
         TraceLog(LOG_ERROR, "RenderDrawData(): draw_data was null!");
         return;

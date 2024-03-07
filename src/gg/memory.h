@@ -24,6 +24,7 @@ void* _Memory_Malloc(size_t size, int32_t source_line, const char* source_name);
 void* _Memory_Calloc(size_t count, size_t size, int32_t source_line, const char* source_name);
 void _Memory_Free(void* address, int32_t source_line, const char* source_name);
 
+void Memory_Initialize();
 void Memory_PrintAllocations();
 void Memory_CleanUpAllocationList();
 

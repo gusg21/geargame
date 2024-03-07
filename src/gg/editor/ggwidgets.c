@@ -78,12 +78,10 @@ void GGWidgets_Console_Destroy(gg_console_t* console) {
     }
 
     if (console->lines != NULL) {
-        if (*console->lines != NULL) {
-            for (size_t line_idx = 0; line_idx < console->line_count; line_idx++) {
-                if (console->lines[line_idx] != NULL) {
-                    GG_FREE(console->lines[line_idx]);
-                    console->lines[line_idx] = NULL;
-                }
+        for (size_t line_idx = 0; line_idx < console->line_count; line_idx++) {
+            if (console->lines[line_idx] != NULL) {
+                GG_FREE(console->lines[line_idx]);
+                console->lines[line_idx] = NULL;
             }
         }
     }

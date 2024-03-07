@@ -4,6 +4,10 @@
 
 gg_mem_alloc_t* g_mem_alloc_list = NULL;
 
+void Memory_Initialize() {
+    g_mem_alloc_list = NULL;
+}
+
 void* _Memory_Malloc(size_t size, int32_t source_line, const char* source_name) {
     gg_mem_alloc_t* tail = g_mem_alloc_list;
     gg_mem_alloc_t* new_alloc = NULL;
@@ -23,6 +27,7 @@ void* _Memory_Malloc(size_t size, int32_t source_line, const char* source_name) 
     new_alloc->source_line = source_line;
     new_alloc->source_name = source_name;
     new_alloc->freed = false;
+    new_alloc->next = NULL;
 
     return new_alloc->address;
 }
@@ -46,6 +51,7 @@ void* _Memory_Calloc(size_t count, size_t size, int32_t source_line, const char*
     new_alloc->source_line = source_line;
     new_alloc->source_name = source_name;
     new_alloc->freed = false;
+    new_alloc->next = NULL;
 
     return new_alloc->address;
 }

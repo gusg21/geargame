@@ -93,7 +93,7 @@ void Window_ClearScreen(gg_window_t* window, gg_color_t color) {
 }
 
 void Window_DrawWindowTexture(gg_window_t* window) {
-    DrawTextureRec(window->_tex.texture, (Rectangle){0, 0, window->_tex.texture.width, -window->_tex.texture.height},
+    DrawTextureRec(window->_tex.texture, (Rectangle){0, 0, (float)window->_tex.texture.width, (float)-window->_tex.texture.height},
                    (Vector2){0, 0}, WHITE);
 }
 
