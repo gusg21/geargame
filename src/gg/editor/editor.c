@@ -25,6 +25,14 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
     editor->is_assets_viewer_visible = true;
 }
 
+static void Editor_S_DoStateViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
+    if (igBegin(ICON_GG_STATE " State Viewer", NULL, 0)) {
+
+
+        igEnd();
+    }
+}
+
 static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     ImGuiIO* io = igGetIO();
     if (igBegin(ICON_GG_SCENE " Scene Viewer", NULL, 0)) {
@@ -111,6 +119,9 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
         igText("-");
         igSameLine2();
 
+        GGWidgets_ToggleButton(ICON_GG_SCENE " State", &editor->is_state_viewer_visible);
+        igSameLine2();
+
         GGWidgets_ToggleButton(ICON_GG_SCENE " Scene", &editor->is_scene_viewer_visible);
         igSameLine2();
 
@@ -168,6 +179,7 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
 
     // igDockSpaceOverViewport2(igGetMainViewport());
 
+    if (editor->is_state_viewer_visible) Editor_S_DoStateViewer(editor, state, assets, window);
     if (editor->is_scene_viewer_visible) Editor_S_DoSceneViewer(editor, state, assets, window);
     if (editor->is_assets_viewer_visible) AssetEditor_Do(&editor->asset_editor, editor, state, assets, window);
     if (editor->is_code_editor_visible) CodeEditor_Do(&editor->code_editor);

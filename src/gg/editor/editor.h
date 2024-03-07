@@ -32,6 +32,7 @@
 #define ICON_GG_ACTOR_SPEC ICON_TYPE_SPECIMEN
 #define ICON_GG_SCRIPT ICON_CODE
 #define ICON_GG_SCENE ICON_FORMAT_LIST_NUMBERED
+#define ICON_GG_STATE ICON_OTHER_HOUSES
 #define ICON_GG_TEXTURE ICON_IMAGE
 #define ICON_GG_TILED_MAP ICON_GRID_VIEW
 
@@ -45,6 +46,8 @@ typedef struct gg_editor {
     gg_code_editor_t code_editor;
 
     bool is_scene_viewer_visible;
+
+    bool is_state_viewer_visible;
 
     bool is_assets_viewer_visible;
     gg_asset_editor_t asset_editor;
