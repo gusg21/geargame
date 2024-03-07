@@ -52,6 +52,12 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
             break;
         }
         case ASSET_SCENE: {
+            if (pair->asset.data.as_scene.paused) {
+                igText(ICON_GG_PAUSE " Paused");
+            } else {
+                igText(ICON_GG_PLAY " Unpaused");
+            }
+
             bool is_current = &pair->asset.data.as_scene == state->current_scene;
             igBeginDisabled(is_current);
             if (igButton2(ICON_GG_EDIT " Edit Scene")) {
@@ -122,6 +128,7 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
         if (igButton2("Create!")) {
             gg_asset_pair_t* new_asset_pair = Assets_CreateNew(assets, ASSET_SCENE, asset_editor->new_asset_name);
             Scene_Create(&new_asset_pair->asset.data.as_scene, window, state);
+            new_asset_pair->asset.data.as_scene.paused = true;
 
             igClosePopupToLevel(0, true);
         }
