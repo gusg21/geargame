@@ -9,8 +9,7 @@
 void CodeEditor_Create(gg_code_editor_t* code_editor) { TextEditor_create(&code_editor->text_editor); }
 
 void CodeEditor_Do(gg_code_editor_t* code_editor) {
-    igBegin(ICON_GG_SCRIPT " Code Editor", &code_editor->open, 0);
-    {
+    if (igBegin(ICON_GG_SCRIPT " Code Editor", NULL, 0)) {
         if (code_editor->text_editor_pair != NULL) {
             igText("Editing asset %s", code_editor->text_editor_pair->name);
 
@@ -41,8 +40,6 @@ void CodeEditor_SaveScriptAsset(gg_code_editor_t* code_editor, gg_asset_pair_t* 
     asset_pair->asset.data.as_script.ok = true;
 }
 
-void CodeEditor_Destroy(gg_code_editor_t* code_editor) {
-    TextEditor_destroy(&code_editor->text_editor);
-}
+void CodeEditor_Destroy(gg_code_editor_t* code_editor) { TextEditor_destroy(&code_editor->text_editor); }
 
 #endif

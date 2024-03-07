@@ -14,7 +14,6 @@ typedef struct gg_state gg_state_t;
 typedef struct gg_window gg_window_t;
 
 typedef struct gg_output_console {
-    bool open;
     gg_console_t console;
 } gg_output_console_t;
 

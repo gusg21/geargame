@@ -27,8 +27,7 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
 
 static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     ImGuiIO* io = igGetIO();
-    igBegin(ICON_GG_SCENE " Scene Viewer", &editor->is_scene_viewer_open, 0);
-    {
+    if (igBegin(ICON_GG_SCENE " Scene Viewer", NULL, 0)) {
         GGWidgets_ToggleButton(state->current_scene->paused ? ICON_GG_PLAY : ICON_GG_PAUSE,
                                &state->current_scene->paused);
 
@@ -87,9 +86,7 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
 }
 
 static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
-    bool open = true;
-
-    igBegin("##Toolbar", &open,
+    igBegin("##Toolbar", NULL,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
     {
@@ -136,7 +133,7 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
 static void Editor_S_DoGameView(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     igSetNextWindowSize((ImVec2){window->_tex.texture.width / 2.f, window->_tex.texture.height / 2.f},
                         ImGuiCond_FirstUseEver);
-    if (igBegin(ICON_GG_GAME " Game", &editor->is_game_open, ImGuiWindowFlags_MenuBar)) {
+    if (igBegin(ICON_GG_GAME " Game", NULL, ImGuiWindowFlags_MenuBar)) {
         ImVec2 avail_size, window_size;
         igGetContentRegionAvail(&avail_size);
         igGetWindowSize(&window_size);
@@ -172,7 +169,7 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     if (editor->is_code_editor_visible) CodeEditor_Do(&editor->code_editor);
     if (editor->is_lua_console_visible) LuaConsole_Do(&editor->lua_console, &state->current_scene->scripting);
     if (editor->is_output_console_visible) OutputConsole_Do(&editor->output_console);
-    if (editor->is_demo_window_visible) igShowDemoWindow(&editor->is_demo_window_open);
+    if (editor->is_demo_window_visible) igShowDemoWindow(NULL);
     if (!state->render_to_window) Editor_S_DoGameView(editor, state, assets, window);
 }
 

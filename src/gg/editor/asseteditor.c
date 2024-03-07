@@ -13,7 +13,6 @@
 
 void AssetEditor_Create(gg_asset_editor_t* asset_editor) {
     memset(asset_editor->new_asset_name, 0, EDITOR_NEW_ASSET_NAME_LENGTH);
-    asset_editor->open = true;
 }
 
 void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* assets, gg_editor_t* editor,
@@ -149,8 +148,7 @@ static const char* AssetEditor_S_GetTypeIcon(gg_asset_type_e type) {
 
 void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets,
                     gg_window_t* window) {
-    igBegin(ICON_GG_ASSET " Assets Viewer", &asset_editor->open, 0);
-    {
+    if (igBegin(ICON_GG_ASSET " Assets Viewer", NULL, 0)) {
         GGWidgets_Header((ImVec4){22 / 255.f, 247 / 255.f, 109 / 255.f, 255 / 255.f}, ICON_GG_ASSET " Assets Viewer");
 
         if (igBeginPopup("Create New Asset Popup", ImGuiWindowFlags_NoDecoration)) {

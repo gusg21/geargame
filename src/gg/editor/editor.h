@@ -43,13 +43,11 @@ typedef struct gg_editor {
     bool is_code_editor_visible;
     gg_code_editor_t code_editor;
 
-    bool is_scene_viewer_open;
     bool is_scene_viewer_visible;
 
     bool is_assets_viewer_visible;
     gg_asset_editor_t asset_editor;
 
-    bool is_demo_window_open;
     bool is_demo_window_visible;
 
     bool is_lua_console_visible;
@@ -57,9 +55,6 @@ typedef struct gg_editor {
 
     bool is_output_console_visible;
     gg_output_console_t output_console;
-
-    bool is_game_open;
-
 } gg_editor_t;
 
 // Create the Geargame Editor. Needs the scripting context to set up the Lua Console print hooks

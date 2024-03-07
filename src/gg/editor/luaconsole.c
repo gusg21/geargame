@@ -15,7 +15,6 @@
 gg_lua_console_t* g_lua_console;
 
 void LuaConsole_Create(gg_lua_console_t* lua_console, gg_scripting_t* scripting) {
-    lua_console->open = true;
     g_lua_console = lua_console;
     GGWidgets_Console_Create(&lua_console->console, EDITOR_LUA_CONSOLE_LINES);
     lua_register(scripting->state, "print", LuaConsole_LuaPrint);
@@ -36,7 +35,7 @@ void LuaConsole_Do(gg_lua_console_t* console, gg_scripting_t* scripting) {
     igCalcTextSize(&size, "TALL LETTERS", NULL, false, 0);
     float height = igGetStyle()->ItemSpacing.y + size.y;
     igSetNextWindowSizeConstraints2((ImVec2){0.f, 0.f}, (ImVec2){FLT_MAX, (EDITOR_LUA_CONSOLE_LINES + 4) * height});
-    if (igBegin(ICON_GG_LUA " Lua Console", &console->open, 0)) {
+    if (igBegin(ICON_GG_LUA " Lua Console", NULL, 0)) {
         GGWidgets_Console_Do(&console->console, true);
 
         if (igInputText("<", console->lua_input_line, 127, ImGuiInputTextFlags_EnterReturnsTrue, NULL, NULL)) {
