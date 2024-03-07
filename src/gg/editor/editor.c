@@ -29,11 +29,11 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
     ImGuiIO* io = igGetIO();
     if (igBegin(ICON_GG_SCENE " Scene Viewer", NULL, 0)) {
         if (igButton2(ICON_GG_RESET)) {
-            Scene_Reset(state->current_scene);
-        igSameLine2();
+            Scene_Ready(state->current_scene);
         }
-        GGWidgets_ToggleButton(state->current_scene->paused ? ICON_GG_PLAY : ICON_GG_PAUSE, &state->current_scene->paused);
-    
+        igSameLine2();
+        GGWidgets_ToggleButton(state->current_scene->paused ? ICON_GG_PLAY : ICON_GG_PAUSE,
+                               &state->current_scene->paused);
 
         igSeparator();
 

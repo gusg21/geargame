@@ -35,10 +35,8 @@ void Assets_Load(gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg
         case ASSET_SCRIPT:
             Script_LoadFromLua(&pair->asset.data.as_script, formatted_path);
             break;
-        case ASSET_SCENE:
-            // This asset is FANCY (read: painful) and needs the asset manager itself!!!
-            // Yippee!!!
-            Scene_LoadFromJson(&pair->asset.data.as_scene, assets, window, state, formatted_path);
+        case ASSET_SCENE_SPEC:
+            SceneSpec_LoadFromJSON(&pair->asset.data.as_scene_spec, assets, formatted_path);
             break;
         case ASSET_ACTOR_SPEC:
             ActorSpec_LoadFromJSON(&pair->asset.data.as_actor_spec, formatted_path);
@@ -142,8 +140,8 @@ const char* Assets_GetTypeName(gg_asset_type_e type) {
         case ASSET_NONE:
             return "None";
 
-        case ASSET_SCENE:
-            return "Scene";
+        case ASSET_SCENE_SPEC:
+            return "Scene Spec";
 
         case ASSET_SCRIPT:
             return "Script";
@@ -191,9 +189,10 @@ void Assets_Destroy(gg_assets_t* assets) {
 void Assets_DestroyPair(gg_assets_t* assets, gg_asset_pair_t* pair) {
     switch (pair->asset.type) {
         case ASSET_ACTOR_SPEC:
+            ActorSpec_Destroy(&pair->asset.data.as_actor_spec);
             break;
-        case ASSET_SCENE:
-            Scene_Destroy(&pair->asset.data.as_scene);
+        case ASSET_SCENE_SPEC:
+            SceneSpec_Destroy(&pair->asset.data.as_scene_spec);
             break;
         case ASSET_SCRIPT:
             Script_Destroy(&pair->asset.data.as_script);

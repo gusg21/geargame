@@ -1,22 +1,23 @@
 #if !defined(GG_SCENE_H)
 #define GG_SCENE_H
 
-#define SCENE_MAX_ACTORS 64
-#define SCENE_DEFAULT_NAME "NEW_SCENE"
-#define SCENE_DEFAULT_NAME_LEN sizeof(SCENE_DEFAULT_NAME)
-#define SCENE_MAP_RENDERER_SCRIPT "gg/map"
-#define SCENE_MAP_RENDERER_SETUP_NAME "set_tiled_map"
-
 #include <stdint.h>
 
 #include "camera.h"
 #include "scripting.h"
 #include "transform.h"
 
+#define SCENE_MAX_ACTORS 64
+#define SCENE_DEFAULT_NAME "NEW_SCENE"
+#define SCENE_MAX_NAME_LEN 64
+#define SCENE_MAP_RENDERER_SCRIPT "gg/map"
+#define SCENE_MAP_RENDERER_SETUP_NAME "set_tiled_map"
+
 // Forward declarations for pointers
 typedef struct gg_actor gg_actor_t;
 typedef struct gg_actor_spec gg_actor_spec_t;
 typedef struct gg_assets gg_assets_t;
+typedef struct gg_scene_spec gg_scene_spec_t;
 typedef struct gg_state gg_state_t;
 typedef struct gg_tiled_map gg_tiled_map_t;
 typedef struct gg_window gg_window_t;
@@ -24,8 +25,10 @@ typedef struct gg_window gg_window_t;
 // Represents a set of actors, a scripting state, and a camera. Can be loaded as an asset and swapped in and out of
 // gg_state_t's ad nauseum.
 typedef struct gg_scene {
-    char* name;   // The name of the scene
-    bool paused;  // Is this scene paused?
+    bool ok;  // Is this scene actually being used/initialized?
+
+    char name[SCENE_MAX_NAME_LEN];  // The name of the scene
+    bool paused;                    // Is this scene paused?
 
     gg_actor_t* actors;     // The block of actors
     uint32_t actors_alive;  // The number of actors currently activated
@@ -39,8 +42,10 @@ typedef struct gg_scene {
 // Create an empty scene
 void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state);
 // Load a scene from a .JSON spec
-void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_state_t* state,
-                        const char* path);
+// void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_state_t* state,
+//                         const char* path);
+// Load a scene from a gg_scene_spec_t
+void Scene_CreateFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_state_t* state, gg_scene_spec_t* spec);
 // Activate a non-active actor and set it up
 // "script" is an optional paramter. Pass "NULL" to load no script
 uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_script_t* script);

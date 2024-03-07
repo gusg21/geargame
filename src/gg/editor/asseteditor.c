@@ -50,22 +50,9 @@ void AssetEditor_AssetPairInfo(gg_asset_editor_t* asset_editor, gg_assets_t* ass
                    pair->asset.data.as_actor_spec.initial_pos.y);
             break;
         }
-        case ASSET_SCENE: {
-            if (pair->asset.data.as_scene.paused) {
-                igText(ICON_GG_PAUSE " Paused");
-            } else {
-                igText(ICON_GG_PLAY " Unpaused");
-            }
-
-            bool is_current = &pair->asset.data.as_scene == state->current_scene;
-            igBeginDisabled(is_current);
-            if (igButton2(ICON_GG_EDIT " Edit Scene")) {
-                State_SetCurrentScene(state, &pair->asset.data.as_scene);
-            }
-            igEndDisabled();
-            if (is_current) {
-                igSameLine2();
-                igText(ICON_GG_CLOSE " Scene already open");
+        case ASSET_SCENE_SPEC: {
+            if (igButton2(ICON_GG_EDIT " Edit Scene Spec")) {
+                
             }
             break;
         }
@@ -125,9 +112,8 @@ static void AssetEditor_S_DoCreatePopups(gg_asset_editor_t* asset_editor, gg_edi
         igInputText2("Script Name", asset_editor->new_asset_name, EDITOR_NEW_ASSET_NAME_LENGTH);
 
         if (igButton2("Create!")) {
-            gg_asset_pair_t* new_asset_pair = Assets_CreateNew(assets, ASSET_SCENE, asset_editor->new_asset_name);
-            Scene_Create(&new_asset_pair->asset.data.as_scene, window, state);
-            new_asset_pair->asset.data.as_scene.paused = true;
+            gg_asset_pair_t* new_asset_pair = Assets_CreateNew(assets, ASSET_SCENE_SPEC, asset_editor->new_asset_name);
+            SceneSpec_Create(&new_asset_pair->asset.data.as_scene_spec);
 
             igClosePopupToLevel(0, true);
         }
@@ -140,7 +126,7 @@ static const char* AssetEditor_S_GetTypeIcon(gg_asset_type_e type) {
     switch (type) {
         case ASSET_ACTOR_SPEC:
             return ICON_GG_ACTOR_SPEC;
-        case ASSET_SCENE:
+        case ASSET_SCENE_SPEC:
             return ICON_GG_SCENE;
         case ASSET_SCRIPT:
             return ICON_GG_SCRIPT;
@@ -173,7 +159,7 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
                         case ASSET_SCRIPT:
                             igOpenPopup_Str("Create New Script Popup", 0);
                             break;
-                        case ASSET_SCENE:
+                        case ASSET_SCENE_SPEC:
                             igOpenPopup_Str("Create New Scene Popup", 0);
                             break;
                         default:
@@ -197,13 +183,8 @@ void AssetEditor_Do(gg_asset_editor_t* asset_editor, gg_editor_t* editor, gg_sta
         while (pair != NULL) {
             const char* type_name = Assets_GetTypeName(pair->asset.type);
             const char* type_icon = AssetEditor_S_GetTypeIcon(pair->asset.type);
-            bool is_current_scene = false;
-            if (pair->asset.type == ASSET_SCENE && state->current_scene == &pair->asset.data.as_scene) {
-                is_current_scene = true;
-            }
 
-            if (igTreeNode_StrStr(pair->name, "%s %s (%s) %s", type_icon, pair->name, type_name,
-                                  is_current_scene ? ICON_GG_SPECIAL : "")) {
+            if (igTreeNode_StrStr(pair->name, "%s %s (%s)", type_icon, pair->name, type_name)) {
                 AssetEditor_AssetPairInfo(&editor->asset_editor, assets, editor, &editor->code_editor, state, window, pair);
 
                 igTreePop();

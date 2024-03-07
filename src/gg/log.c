@@ -38,7 +38,7 @@ char* Log_TextFormat(const char* format, ...) {
     if (requiredByteCount >= MAX_TEXT_BUFFER_LENGTH) {
         // Inserting "..." at the end of the string to mark as truncated
         char* truncBuffer = buffers[index] + MAX_TEXT_BUFFER_LENGTH - 4;  // Adding 4 bytes = "...\0"
-        sprintf_s(truncBuffer, 4, "...");
+        sprintf_s(truncBuffer, 4, "...", NULL);
     }
 
     index += 1;  // Move to next buffer for next function call

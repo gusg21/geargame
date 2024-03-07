@@ -15,9 +15,11 @@
 #include "utils.h"
 
 void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
+    // Good to go
+    scene->ok = true;
+
     // Name
-    scene->name = (char*)GG_CALLOC(SCENE_DEFAULT_NAME_LEN, sizeof(char));
-    sprintf_s(scene->name, SCENE_DEFAULT_NAME_LEN, "%s", SCENE_DEFAULT_NAME);
+    sprintf_s(scene->name, SCENE_MAX_NAME_LEN, "%s", SCENE_DEFAULT_NAME);
 
     // Pausing
     scene->paused = false;
@@ -42,45 +44,25 @@ void Scene_Create(gg_scene_t* scene, gg_window_t* window, gg_state_t* state) {
     Scripting_Initialize(&scene->scripting, true);
 }
 
-void Scene_LoadFromJson(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_state_t* state,
-                        const char* path) {
-    // Create empty scene
+void Scene_CreateFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_state_t* state,
+                          gg_scene_spec_t* spec) {
+    // Initialize
     Scene_Create(scene, window, state);
 
-    // Load JSON
-    JSON_Value* json_root = json_parse_file_with_comments(path);
-    if (json_root == NULL) {
-        Log_Err(Log_TextFormat("SCENE JSON: Failed to load JSON from %s", path));
-        return;
-    }
-    JSON_Object* root_obj = json_object(json_root);
+    // Name
+    sprintf_s(scene->name, SCENE_MAX_NAME_LEN, "%s", spec->name);
 
-    // Scene Name
-    if (json_object_dothas_value_of_type(root_obj, "name", JSONString)) {
-        const char* scene_name = json_object_dotget_string(root_obj, "name");
-        size_t scene_name_len = json_object_dotget_string_len(root_obj, "name");
+    // Actors
+    for (uint32_t i = 0; i < SCENE_SPEC_MAX_ACTOR_SPECS; i++) {
+        gg_actor_spec_t* actor_spec = spec->actor_specs[i];
 
-        if (scene->name != NULL) {
-            GG_FREE(scene->name);
-            scene->name = NULL;
-        }
-        
-        scene->name = (char*)GG_CALLOC(scene_name_len, sizeof(char));
-        sprintf_s(scene->name, scene_name_len, "%s", scene_name);
-    }
-
-    // Scene Map
-    if (json_object_dothas_value_of_type(root_obj, "map", JSONString)) {
-        const char* map_name = json_object_dotget_string(root_obj, "map");
-
-        gg_asset_t* map_asset;
-        bool found = Assets_Get(assets, &map_asset, map_name);
-        if (found) {
-            Scene_CreateObjectsFromTiledMap(scene, window, assets, &map_asset->data.as_tiled_map);
-        } else {
-            Log_Err(Log_TextFormat("Unable to load tiled map asset %s", map_name));
+        if (actor_spec != NULL) {
+            Scene_NewActorFromSpec(scene, assets, window, actor_spec);
         }
     }
+
+    // Tiled Map
+    Scene_CreateObjectsFromTiledMap(scene, window, assets, spec->tiled_map);
 }
 
 uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_script_t* script) {
@@ -99,7 +81,8 @@ uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
 
             if (script != NULL) {
                 actor->script_handle = Scripting_LoadScript(&scene->scripting, script);
-                // Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state, window,
+                // Actor_CallScriptFunctionWithPointerBouquet(actor, &scene->scripting, "initialize", scene->state,
+                // window,
                 //                                            assets);
                 Actor_SetPointerBouquet(actor, &scene->scripting, scene->state, window, assets);
             }
@@ -111,8 +94,7 @@ uint32_t Scene_NewActor(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* win
     return ACTOR_INVALID;
 }
 
-uint32_t Scene_NewActorFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window,
-                                    gg_actor_spec_t* spec) {
+uint32_t Scene_NewActorFromSpec(gg_scene_t* scene, gg_assets_t* assets, gg_window_t* window, gg_actor_spec_t* spec) {
     // Load the script specified in the spec
     gg_script_t* script = NULL;
     gg_asset_t* script_asset;

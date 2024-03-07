@@ -15,5 +15,6 @@ typedef struct gg_actor_spec {
 } gg_actor_spec_t;
 
 void ActorSpec_LoadFromJSON(gg_actor_spec_t* spec, const char* path);
+void ActorSpec_Destroy(gg_actor_spec_t* spec);
 
 #endif  // GG_ACTOR_SPEC_H

@@ -1,5 +1,7 @@
 #include "cimgui_impl_raylib.h"
 
+#include <string.h>
+
 #include "assets.h"
 #include "color.h"
 #include "log.h"
@@ -19,19 +21,43 @@ void State_Init(gg_state_t* state) {
     Keys_Create(&state->keys);
     state->current_scene = NULL;
 
-    #ifdef GG_EDITOR
+    memset(state->scenes, 0, sizeof(gg_scene_t) * STATE_MAX_SCENES);
+
+#ifdef GG_EDITOR
     state->render_to_window = false;
-    #else
+#else
     state->render_to_window = true;
-    #endif
+#endif
     state->wants_exit = false;
 }
 
 void State_SetCurrentScene(gg_state_t* state, gg_scene_t* scene) {
     state->current_scene = scene;
+
 #ifdef GG_EDITOR
     Editor_Create(&state->editor, &scene->scripting);
 #endif
+}
+
+gg_scene_t* State_CreateSceneFromSpec(gg_state_t* state, gg_assets_t* assets, gg_window_t* window,
+                                      gg_scene_spec_t* spec) {
+    // Get an open scene
+    gg_scene_t* new_scene = NULL;
+    for (uint32_t i = 0; i < STATE_MAX_SCENES; i++) {
+        gg_scene_t* scene = &state->scenes[i];
+        if (!scene->ok) {
+            new_scene = scene;
+            Log_Info(Log_TextFormat("Creating new scene at index %d...", i));
+            break;
+        }
+    }
+
+    // Create from the spec
+    if (new_scene != NULL) {
+        Scene_CreateFromSpec(new_scene, assets, window, state, spec);
+    }
+
+    return new_scene;
 }
 
 void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
@@ -59,8 +85,6 @@ void State_DoLoop(gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
 
         if (state->wants_exit) break;
     }
-
-    State_Destroy(state);
 }
 
 void State_Tick(gg_state_t* state, gg_window_t* window) {
@@ -90,7 +114,7 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         Window_SetTarget(window);
         {
             Window_ClearScreen(window, COL(10, 20, 30));
-            
+
             // Background Space Rendering
             Window_BeginParallaxCameraDrawing(window, &state->current_scene->camera, 0.2f);
             { Window_DrawSpaceOrigin(window); }
@@ -117,8 +141,6 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
             // igUpdatePlatformWindows();
             // igRenderPlatformWindowsDefault(NULL, NULL);
 #endif
-        
-
         }
         Window_EndDrawing(window);
 
@@ -126,13 +148,26 @@ void State_Draw(gg_state_t* state, gg_window_t* window) {
         Window_BeginDrawing(window);
         { Window_DrawRectangle(window, 0, 0, Window_GetWidth(window), Window_GetHeight(window), COL(220, 200, 10)); }
         Window_EndDrawing(window);
+
+#ifdef GG_EDITOR
+        ImGui_ImplRaylib_Render();
+        // igUpdatePlatformWindows();
+        // igRenderPlatformWindowsDefault(NULL, NULL);
+#endif
     }
 }
 
 void State_Quit(gg_state_t* state) { state->wants_exit = true; }
 
 void State_Destroy(gg_state_t* state) {
-    // NOTE: Don't need to kill the scene; we only have a pointer to a gg_scene_t managed by the assets
+    for (uint32_t i = 0; i < STATE_MAX_SCENES; i++) {
+        gg_scene_t* scene = &state->scenes[i];
+
+        if (scene->ok) {
+            Scene_Destroy(scene);
+        }
+    }
+
     Keys_Destroy(&state->keys);
 #ifdef GG_EDITOR
     Editor_Destroy(&state->editor);

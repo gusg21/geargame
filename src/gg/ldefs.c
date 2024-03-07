@@ -88,8 +88,8 @@ LDEF(Scene_NewActorFromSpec) {
 // ASSETS FUNCTIONS
 static void LDefs_S_PushAssetValue(lua_State* L, gg_asset_t* asset, gg_asset_type_e asset_type) {
     switch (asset_type) {
-        case ASSET_SCENE:
-            lua_pushlightuserdata(L, &asset->data.as_scene);
+        case ASSET_SCENE_SPEC:
+            lua_pushlightuserdata(L, &asset->data.as_scene_spec);
             break;
         case ASSET_SCRIPT:
             lua_pushlightuserdata(L, &asset->data.as_script);
@@ -320,8 +320,8 @@ void LDefs_LoadIntoScripting(gg_scripting_t* scripting) {
     // Globals
     lua_pushinteger(scripting->state, ASSET_NONE);
     lua_setglobal(scripting->state, "ASSET_NONE");
-    lua_pushinteger(scripting->state, ASSET_SCENE);
-    lua_setglobal(scripting->state, "ASSET_SCENE");
+    lua_pushinteger(scripting->state, ASSET_SCENE_SPEC);
+    lua_setglobal(scripting->state, "ASSET_SCENE_SPEC");
     lua_pushinteger(scripting->state, ASSET_SCRIPT);
     lua_setglobal(scripting->state, "ASSET_SCRIPT");
     lua_pushinteger(scripting->state, ASSET_TEXTURE);

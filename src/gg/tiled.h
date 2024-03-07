@@ -6,7 +6,6 @@
 #include "tiledobject.h"
 #include "tileset.h"
 
-
 typedef struct gg_tiled_map {
     gg_grid_t grid;
     gg_tileset_t set;

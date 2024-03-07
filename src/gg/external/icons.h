@@ -4,7 +4,7 @@
 #define QUOTED(text)
 
 #ifdef APPLE
-#define u8 u8""
+#define u8 ""
 #endif
 
 #define ICON_10K u8"\ue951"

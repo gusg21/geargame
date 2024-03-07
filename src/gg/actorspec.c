@@ -41,3 +41,7 @@ void ActorSpec_LoadFromJSON(gg_actor_spec_t* spec, const char* path) {
         }
     }
 }
+
+void ActorSpec_Destroy(gg_actor_spec_t* spec) {
+    // I'm a fraud
+}

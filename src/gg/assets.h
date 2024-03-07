@@ -5,7 +5,7 @@
 
 #include "actorspec.h"
 #include "assets.h"
-#include "scene.h"
+#include "scenespec.h"
 #include "scripting.h"
 #include "tiled.h"
 #include "texture.h"
@@ -17,7 +17,7 @@ typedef enum gg_asset_type {
     ASSET_TEXTURE,
     ASSET_TILED_MAP,
     ASSET_SCRIPT,
-    ASSET_SCENE,
+    ASSET_SCENE_SPEC,
     ASSET_ACTOR_SPEC,
     ASSET_TYPE_COUNT
 } gg_asset_type_e;
@@ -26,7 +26,7 @@ typedef union gg_asset_data {
     gg_texture_t as_tex;
     gg_tiled_map_t as_tiled_map;
     gg_script_t as_script;
-    gg_scene_t as_scene;
+    gg_scene_spec_t as_scene_spec;
     gg_actor_spec_t as_actor_spec;
 } gg_asset_data_u;
 

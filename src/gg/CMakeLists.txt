@@ -22,6 +22,7 @@ set(SOURCE_FILES
     log.c
     memory.c
     scene.c
+    scenespec.c
     scripting.c
     state.c
     texture.c
