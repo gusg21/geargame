@@ -11,7 +11,6 @@ typedef struct gg_state gg_state_t;
 typedef struct gg_window gg_window_t;
 
 typedef struct gg_code_editor {
-    bool open;
     ImTextEditor text_editor;
     gg_asset_pair_t* text_editor_pair;
 } gg_code_editor_t;

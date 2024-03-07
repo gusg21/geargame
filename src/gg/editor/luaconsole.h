@@ -18,7 +18,6 @@ typedef struct gg_state gg_state_t;
 typedef struct gg_window gg_window_t;
 
 typedef struct gg_lua_console {
-    bool open;
     gg_console_t console;
     char lua_input_line[EDITOR_LUA_INPUT_LINE_LENGTH];
 } gg_lua_console_t;

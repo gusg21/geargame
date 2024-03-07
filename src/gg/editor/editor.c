@@ -27,25 +27,25 @@ void Editor_Create(gg_editor_t* editor, gg_scripting_t* scripting) {
 
 static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
     ImGuiIO* io = igGetIO();
-    igBegin(ICON_GG_SCENE " Scene Viewer", &editor->is_scene_viewer_open, 0);
-    {
+    if (igBegin(ICON_GG_SCENE " Scene Viewer", NULL, 0)) {
         if (igButton2(ICON_GG_RESET)) {
             Scene_Reset(state->current_scene);
-        }
         igSameLine2();
+        }
         GGWidgets_ToggleButton(state->current_scene->paused ? ICON_GG_PLAY : ICON_GG_PAUSE, &state->current_scene->paused);
+    
 
         igSeparator();
 
         GGWidgets_Header((ImVec4){235 / 255.f, 185 / 255.f, 72 / 255.f, 255 / 255.f}, ICON_GG_SCENE " Scene Viewer");
 
         // Spawning/controls
-        const uint32_t max_actor_spec_names = 64;
-        char* actor_spec_names[max_actor_spec_names] = {0};
+#define MAX_ACTOR_SPEC_NAMES 64
+        char* actor_spec_names[MAX_ACTOR_SPEC_NAMES] = {0};
         Assets_FindAssetsByType(assets, actor_spec_names, ASSET_ACTOR_SPEC);
 
         if (igBeginCombo("Actor Spec", ICON_GG_ACTOR_SPEC " Spawn an Actor Spec...", 0)) {
-            for (size_t i = 0; i < max_actor_spec_names; i++) {
+            for (size_t i = 0; i < MAX_ACTOR_SPEC_NAMES; i++) {
                 if (actor_spec_names[i] != NULL) {
                     const char* name = actor_spec_names[i];
                     if (igButton2(name)) {
@@ -62,10 +62,10 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
             igEndCombo();
         }
         igSeparator();
+#undef MAX_ACTOR_SPEC_NAMES
 
         // Show actors
-        const uint32_t max_script_names = 64;
-        char* script_names[max_script_names] = {0};
+        char* script_names[64] = {0};
         Assets_FindAssetsByType(assets, script_names, ASSET_SCRIPT);
 
         gg_scene_t* scene = state->current_scene;
@@ -90,9 +90,7 @@ static void Editor_S_DoSceneViewer(gg_editor_t* editor, gg_state_t* state, gg_as
 }
 
 static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
-    bool open = true;
-
-    igBegin("##Toolbar", &open,
+    igBegin("##Toolbar", NULL,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
     {
@@ -137,9 +135,9 @@ static void Editor_S_DoToolbar(gg_editor_t* editor, gg_state_t* state, gg_assets
 }
 
 static void Editor_S_DoGameView(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, gg_window_t* window) {
-    igSetNextWindowSize((ImVec2){window->_tex.texture.width / 2, window->_tex.texture.height / 2},
+    igSetNextWindowSize((ImVec2){window->_tex.texture.width / 2.f, window->_tex.texture.height / 2.f},
                         ImGuiCond_FirstUseEver);
-    if (igBegin(ICON_GG_GAME " Game", &editor->is_game_open, ImGuiWindowFlags_MenuBar)) {
+    if (igBegin(ICON_GG_GAME " Game", NULL, ImGuiWindowFlags_MenuBar)) {
         ImVec2 avail_size, window_size;
         igGetContentRegionAvail(&avail_size);
         igGetWindowSize(&window_size);
@@ -153,13 +151,14 @@ static void Editor_S_DoGameView(gg_editor_t* editor, gg_state_t* state, gg_asset
         }
 
         if (correct) {
-            igSetWindowSize_Vec2(
-                (ImVec2){window_size.x, window_size.x * ((float)window->_tex.texture.height / (float)window->_tex.texture.width)},
-                ImGuiCond_Always);
+            igSetWindowSize_Vec2((ImVec2){window_size.x, window_size.x * ((float)window->_tex.texture.height /
+                                                                          (float)window->_tex.texture.width)},
+                                 ImGuiCond_Always);
         }
 
         // Draw the game
-        igImage(&window->_tex.texture.id, avail_size, (ImVec2){0, 1}, (ImVec2){1, 0}, (ImVec4){1.f, 1.f, 1.f, 1.f}, (ImVec4){1.f, 1.f, 1.f, 1.f});
+        igImage(&window->_tex.texture.id, avail_size, (ImVec2){0, 1}, (ImVec2){1, 0}, (ImVec4){1.f, 1.f, 1.f, 1.f},
+                (ImVec4){1.f, 1.f, 1.f, 1.f});
     }
     igEnd();
 }
@@ -174,8 +173,8 @@ void Editor_Update(gg_editor_t* editor, gg_state_t* state, gg_assets_t* assets, 
     if (editor->is_code_editor_visible) CodeEditor_Do(&editor->code_editor);
     if (editor->is_lua_console_visible) LuaConsole_Do(&editor->lua_console, &state->current_scene->scripting);
     if (editor->is_output_console_visible) OutputConsole_Do(&editor->output_console);
-    if (editor->is_demo_window_visible) igShowDemoWindow(&editor->is_demo_window_open);
-    if (!state->render_to_window) Editor_S_DoGameView(editor, state, assets, window);    
+    if (editor->is_demo_window_visible) igShowDemoWindow(NULL);
+    if (!state->render_to_window) Editor_S_DoGameView(editor, state, assets, window);
 }
 
 void Editor_Destroy(gg_editor_t* editor) {

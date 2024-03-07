@@ -75,7 +75,6 @@ void OutputConsole_OverrideTraceLog(gg_output_console_t* console) {
 }
 
 void OutputConsole_Create(gg_output_console_t* console) {
-    console->open = true;
     g_output_console = console;
     GGWidgets_Console_Create(&console->console, 50);
     OutputConsole_OverrideTraceLog(console);
@@ -86,7 +85,7 @@ void OutputConsole_ExecuteCommand(gg_output_console_t* console, const char* line
 }
 
 void OutputConsole_Do(gg_output_console_t* console) {
-    if (igBegin(ICON_GG_OUTPUT " Output Console", &console->open, 0)) {
+    if (igBegin(ICON_GG_OUTPUT " Output Console", NULL, 0)) {
         GGWidgets_Console_Do(&console->console, false);
     }
     igEnd();

@@ -13,7 +13,6 @@ typedef struct gg_state gg_state_t;
 typedef struct gg_window gg_window_t;
 
 typedef struct gg_asset_editor {
-    bool open;
     char new_asset_name[EDITOR_NEW_ASSET_NAME_LENGTH];
 } gg_asset_editor_t;
 
